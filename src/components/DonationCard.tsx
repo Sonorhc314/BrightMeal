@@ -1,0 +1,101 @@
+import Link from 'next/link';
+import { Clock, MapPin, Package, ArrowRight, Snowflake, Thermometer, Sun } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import type { Donation, DonationStatus, DonationCategory } from '@/lib/types';
+
+const statusConfig: Record<DonationStatus, { label: string; className: string }> = {
+  posted: { label: 'Available', className: 'bg-blue-100 text-blue-700 border-blue-200' },
+  accepted: { label: 'Accepted', className: 'bg-amber-100 text-amber-700 border-amber-200' },
+  driver_assigned: { label: 'Driver Assigned', className: 'bg-purple-100 text-purple-700 border-purple-200' },
+  picked_up: { label: 'Picked Up', className: 'bg-orange-100 text-orange-700 border-orange-200' },
+  delivered: { label: 'Delivered', className: 'bg-green-100 text-green-700 border-green-200' },
+};
+
+const categoryConfig: Record<DonationCategory, { label: string; color: string }> = {
+  cooked_meals: { label: 'Cooked Meals', color: 'bg-orange-100 text-orange-700' },
+  fresh_produce: { label: 'Fresh Produce', color: 'bg-green-100 text-green-700' },
+  bakery: { label: 'Bakery', color: 'bg-amber-100 text-amber-700' },
+  dairy: { label: 'Dairy', color: 'bg-blue-100 text-blue-700' },
+  other: { label: 'Other', color: 'bg-gray-100 text-gray-700' },
+};
+
+const storageIcon: Record<string, React.ReactNode> = {
+  frozen: <Snowflake className="h-3.5 w-3.5 text-blue-500" />,
+  chilled: <Thermometer className="h-3.5 w-3.5 text-cyan-500" />,
+  ambient: <Sun className="h-3.5 w-3.5 text-amber-500" />,
+};
+
+interface DonationCardProps {
+  donation: Donation;
+  href: string;
+  showDonor?: boolean;
+}
+
+export function DonationCard({ donation, href, showDonor }: DonationCardProps) {
+  const status = statusConfig[donation.status];
+  const category = categoryConfig[donation.category] || categoryConfig.other;
+  const pickupTime = new Date(donation.pickup_window_start);
+  const timeStr = pickupTime.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+  const dateStr = pickupTime.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+
+  // Urgency: if pickup window is within 2 hours
+  const hoursUntilPickup = (pickupTime.getTime() - Date.now()) / 3600_000;
+  const isUrgent = hoursUntilPickup > 0 && hoursUntilPickup < 2 && donation.status === 'posted';
+
+  return (
+    <Link href={href}>
+      <div className="group relative overflow-hidden rounded-2xl border border-border bg-white p-4 shadow-sm transition-all duration-200 hover:shadow-md hover:border-brand-green/20 active:scale-[0.98]">
+        {/* Hover gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-br from-brand-green/[0.02] to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+
+        <div className="relative">
+          <div className="mb-3 flex items-start justify-between">
+            <div className="flex-1">
+              <h3 className="font-semibold text-foreground">{donation.item_name}</h3>
+              {showDonor && donation.donor && (
+                <p className="text-sm text-muted-foreground">{donation.donor.name}</p>
+              )}
+            </div>
+            <Badge variant="outline" className={`shrink-0 ${status.className}`}>
+              {status.label}
+            </Badge>
+          </div>
+
+          <div className="mb-3 flex flex-wrap items-center gap-2">
+            <span className={`inline-flex items-center gap-1 rounded-lg px-2.5 py-1 text-xs font-medium ${category.color}`}>
+              {category.label}
+            </span>
+            <span className="inline-flex items-center gap-1 rounded-lg bg-secondary px-2.5 py-1 text-xs font-medium text-secondary-foreground">
+              <Package className="h-3 w-3" />
+              {donation.quantity} {donation.unit}
+            </span>
+            <span className="inline-flex items-center gap-1 rounded-lg bg-secondary px-2 py-1">
+              {storageIcon[donation.storage]}
+            </span>
+            {isUrgent && (
+              <span className="inline-flex items-center rounded-lg bg-red-100 px-2 py-1 text-xs font-medium text-red-700">
+                Urgent
+              </span>
+            )}
+          </div>
+
+          <div className="flex items-center justify-between text-sm text-muted-foreground">
+            <div className="flex items-center gap-3">
+              <span className="inline-flex items-center gap-1">
+                <Clock className="h-3.5 w-3.5" />
+                {dateStr}, {timeStr}
+              </span>
+              <span className="inline-flex items-center gap-1">
+                <MapPin className="h-3.5 w-3.5" />
+                {donation.pickup_location.length > 20
+                  ? donation.pickup_location.slice(0, 20) + '...'
+                  : donation.pickup_location}
+              </span>
+            </div>
+            <ArrowRight className="h-4 w-4 text-muted-foreground/50 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:text-brand-green" />
+          </div>
+        </div>
+      </div>
+    </Link>
+  );
+}
