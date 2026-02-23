@@ -1,7 +1,9 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { createClient } from '@/lib/supabase/client';
 import {
   Home,
   HandHeart,
@@ -41,8 +43,39 @@ const navItems: Record<UserRole, NavItem[]> = {
   ],
 };
 
-export function BottomNav({ role }: { role: UserRole }) {
+function inferRoleFromPath(pathname: string): UserRole | null {
+  if (pathname.startsWith('/home') || pathname.startsWith('/post') || pathname.startsWith('/donations')) return 'donor';
+  if (pathname.startsWith('/offers')) return 'charity';
+  if (pathname.startsWith('/jobs')) return 'driver';
+  return null;
+}
+
+export function BottomNav() {
   const pathname = usePathname();
+  const [role, setRole] = useState<UserRole | null>(() => inferRoleFromPath(pathname));
+
+  // For shared pages (/profile, /history, /notifications) where pathname
+  // doesn't reveal the role, fetch it once from Supabase client-side.
+  // The state persists across navigations since this component stays mounted.
+  useEffect(() => {
+    if (role) return;
+
+    const supabase = createClient();
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (!user) return;
+      supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', user.id)
+        .single()
+        .then(({ data }) => {
+          if (data) setRole(data.role as UserRole);
+        });
+    });
+  }, [role]);
+
+  if (!role) return null;
+
   const items = navItems[role];
 
   return (

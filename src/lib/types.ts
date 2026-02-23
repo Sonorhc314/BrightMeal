@@ -8,7 +8,7 @@ export type StorageType = 'ambient' | 'chilled' | 'frozen';
 
 export type PackagingType = 'boxed' | 'bagged' | 'loose' | 'containers';
 
-export type DonationStatus = 'posted' | 'accepted' | 'driver_assigned' | 'picked_up' | 'delivered';
+export type DonationStatus = 'posted' | 'accepted' | 'driver_assigned' | 'picked_up' | 'delivered' | 'cancelled';
 
 export type NotificationType =
   | 'order_accepted'
