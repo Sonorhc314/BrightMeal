@@ -61,25 +61,15 @@ export default function OfferDetailsPage() {
     if (!userId || !donation) return;
     setAccepting(true);
 
-    await supabase
-      .from('donations')
-      .update({ status: 'accepted', charity_id: userId })
-      .eq('id', donation.id);
-
-    await supabase.from('donation_events').insert({
-      donation_id: donation.id,
-      status: 'accepted',
-      actor_id: userId,
+    const { error } = await supabase.rpc('accept_donation', {
+      p_donation_id: donation.id,
     });
 
-    // Notify the donor
-    await supabase.from('notifications').insert({
-      user_id: donation.donor_id,
-      donation_id: donation.id,
-      type: 'order_accepted',
-      title: 'Donation Accepted!',
-      message: `Your donation of ${donation.item_name} has been accepted by a charity.`,
-    });
+    if (error) {
+      setAccepting(false);
+      alert(error.message);
+      return;
+    }
 
     router.push('/offers');
     router.refresh();

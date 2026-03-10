@@ -62,45 +62,15 @@ export default function DonationDetailsPage() {
 
     setCancelLoading(true);
 
-    await supabase
-      .from('donations')
-      .update({ status: 'cancelled' })
-      .eq('id', donation.id);
-
-    await supabase.from('donation_events').insert({
-      donation_id: donation.id,
-      status: 'cancelled',
-      actor_id: userId,
+    const { error } = await supabase.rpc('cancel_donation', {
+      p_donation_id: donation.id,
     });
 
-    // Notify charity and driver if assigned
-    const notifications: { user_id: string; donation_id: string; type: string; title: string; message: string }[] = [];
-
-    if (donation.charity_id) {
-      notifications.push({
-        user_id: donation.charity_id,
-        donation_id: donation.id,
-        type: 'order_accepted',
-        title: 'Donation Cancelled',
-        message: `The donation "${donation.item_name}" has been cancelled by the donor.`,
-      });
+    if (error) {
+      setCancelLoading(false);
+      return;
     }
 
-    if (donation.driver_id) {
-      notifications.push({
-        user_id: donation.driver_id,
-        donation_id: donation.id,
-        type: 'new_job',
-        title: 'Job Cancelled',
-        message: `The delivery job for "${donation.item_name}" has been cancelled.`,
-      });
-    }
-
-    if (notifications.length > 0) {
-      await supabase.from('notifications').insert(notifications);
-    }
-
-    // Refresh state
     setDonation((prev) => prev ? { ...prev, status: 'cancelled' as DonationStatus } : null);
     setEvents((prev) => [...prev, {
       id: crypto.randomUUID(),

@@ -90,45 +90,26 @@ export default function PostDonationPage() {
       return;
     }
 
-    const { error: insertError } = await supabase.from('donations').insert({
-      donor_id: user.id,
-      item_name: itemName,
-      category,
-      quantity: parseFloat(quantity),
-      unit,
-      storage,
-      allergens: allergens.filter((a) => a !== 'None'),
-      packaging,
-      ready_by: new Date(readyBy).toISOString(),
-      use_by: new Date(useBy).toISOString(),
-      pickup_window_start: new Date(pickupStart).toISOString(),
-      pickup_window_end: new Date(pickupEnd).toISOString(),
-      pickup_location: pickupLocation,
-      additional_notes: notes || null,
-      status: 'posted',
+    const { error: rpcError } = await supabase.rpc('create_donation', {
+      p_item_name: itemName,
+      p_category: category,
+      p_quantity: parseFloat(quantity),
+      p_unit: unit,
+      p_storage: storage,
+      p_allergens: allergens.filter((a) => a !== 'None'),
+      p_packaging: packaging,
+      p_ready_by: new Date(readyBy).toISOString(),
+      p_use_by: new Date(useBy).toISOString(),
+      p_pickup_window_start: new Date(pickupStart).toISOString(),
+      p_pickup_window_end: new Date(pickupEnd).toISOString(),
+      p_pickup_location: pickupLocation,
+      p_additional_notes: notes || null,
     });
 
-    if (insertError) {
-      setError(insertError.message);
+    if (rpcError) {
+      setError(rpcError.message);
       setLoading(false);
       return;
-    }
-
-    // Create initial donation event
-    const { data: donation } = await supabase
-      .from('donations')
-      .select('id')
-      .eq('donor_id', user.id)
-      .order('created_at', { ascending: false })
-      .limit(1)
-      .single();
-
-    if (donation) {
-      await supabase.from('donation_events').insert({
-        donation_id: donation.id,
-        status: 'posted',
-        actor_id: user.id,
-      });
     }
 
     router.push('/home');

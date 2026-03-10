@@ -62,39 +62,15 @@ export default function JobDetailsPage() {
     if (!userId || !donation) return;
     setActionLoading(true);
 
-    await supabase
-      .from('donations')
-      .update({ status: 'driver_assigned', driver_id: userId })
-      .eq('id', donation.id);
-
-    await supabase.from('donation_events').insert({
-      donation_id: donation.id,
-      status: 'driver_assigned',
-      actor_id: userId,
+    const { error } = await supabase.rpc('assign_driver', {
+      p_donation_id: donation.id,
     });
 
-    // Notify donor and charity
-    const notifications = [
-      {
-        user_id: donation.donor_id,
-        donation_id: donation.id,
-        type: 'driver_assigned' as const,
-        title: 'Driver Assigned',
-        message: `A driver has been assigned to pick up your ${donation.item_name}.`,
-      },
-    ];
-
-    if (donation.charity_id) {
-      notifications.push({
-        user_id: donation.charity_id,
-        donation_id: donation.id,
-        type: 'driver_assigned' as const,
-        title: 'Driver Assigned',
-        message: `A driver is on the way to pick up ${donation.item_name}.`,
-      });
+    if (error) {
+      setActionLoading(false);
+      alert(error.message);
+      return;
     }
-
-    await supabase.from('notifications').insert(notifications);
 
     router.push('/jobs');
     router.refresh();
@@ -104,41 +80,15 @@ export default function JobDetailsPage() {
     if (!userId || !donation) return;
     setActionLoading(true);
 
-    await supabase
-      .from('donations')
-      .update({ status: 'picked_up' })
-      .eq('id', donation.id);
-
-    await supabase.from('donation_events').insert({
-      donation_id: donation.id,
-      status: 'picked_up',
-      actor_id: userId,
+    const { error } = await supabase.rpc('mark_picked_up', {
+      p_donation_id: donation.id,
     });
 
-    // Notify donor and charity
-    const notifications = [
-      {
-        user_id: donation.donor_id,
-        donation_id: donation.id,
-        type: 'driver_en_route' as const,
-        title: 'Food Picked Up',
-        message: `Your ${donation.item_name} has been picked up and is on the way to the charity.`,
-      },
-    ];
-
-    if (donation.charity_id) {
-      notifications.push({
-        user_id: donation.charity_id,
-        donation_id: donation.id,
-        type: 'driver_en_route' as const,
-        title: 'Driver En Route',
-        message: `The driver has picked up ${donation.item_name} and is heading your way.`,
-      });
+    if (error) {
+      setActionLoading(false);
+      return;
     }
 
-    await supabase.from('notifications').insert(notifications);
-
-    // Refresh state
     setDonation((prev) => prev ? { ...prev, status: 'picked_up' } : null);
     setEvents((prev) => [...prev, {
       id: crypto.randomUUID(),
@@ -154,39 +104,14 @@ export default function JobDetailsPage() {
     if (!userId || !donation) return;
     setActionLoading(true);
 
-    await supabase
-      .from('donations')
-      .update({ status: 'delivered' })
-      .eq('id', donation.id);
-
-    await supabase.from('donation_events').insert({
-      donation_id: donation.id,
-      status: 'delivered',
-      actor_id: userId,
+    const { error } = await supabase.rpc('mark_delivered', {
+      p_donation_id: donation.id,
     });
 
-    // Notify donor and charity
-    const notifications = [
-      {
-        user_id: donation.donor_id,
-        donation_id: donation.id,
-        type: 'delivery_complete' as const,
-        title: 'Delivery Complete!',
-        message: `Your ${donation.item_name} has been successfully delivered to the charity.`,
-      },
-    ];
-
-    if (donation.charity_id) {
-      notifications.push({
-        user_id: donation.charity_id,
-        donation_id: donation.id,
-        type: 'delivery_complete' as const,
-        title: 'Delivery Complete!',
-        message: `${donation.item_name} has been delivered successfully.`,
-      });
+    if (error) {
+      setActionLoading(false);
+      return;
     }
-
-    await supabase.from('notifications').insert(notifications);
 
     router.push('/jobs');
     router.refresh();

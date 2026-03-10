@@ -130,6 +130,13 @@ export default function EditDonationPage() {
     setSaving(true);
     setError('');
 
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      setError('You must be logged in');
+      setSaving(false);
+      return;
+    }
+
     const { error: updateError } = await supabase
       .from('donations')
       .update({
@@ -147,7 +154,9 @@ export default function EditDonationPage() {
         pickup_location: pickupLocation,
         additional_notes: notes || null,
       })
-      .eq('id', id);
+      .eq('id', id)
+      .eq('donor_id', user.id)
+      .eq('status', 'posted');
 
     if (updateError) {
       setError(updateError.message);
