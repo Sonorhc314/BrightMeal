@@ -1,30 +1,31 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { createClient } from '@/lib/supabase/client';
 
 export function NotificationBadge() {
   const [count, setCount] = useState(0);
 
+  const fetchCount = useCallback(async () => {
+    const supabase = createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
+    const { count } = await supabase
+      .from('notifications')
+      .select('*', { count: 'exact', head: true })
+      .eq('user_id', user.id)
+      .eq('read', false);
+
+    setCount(count || 0);
+  }, []);
+
   useEffect(() => {
     const supabase = createClient();
 
-    async function fetchCount() {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-
-      const { count } = await supabase
-        .from('notifications')
-        .select('*', { count: 'exact', head: true })
-        .eq('user_id', user.id)
-        .eq('read', false);
-
-      setCount(count || 0);
-    }
-
     fetchCount();
 
-    // Subscribe to notification changes
+    // Subscribe to notification changes via Realtime
     const channel = supabase
       .channel('notification-badge')
       .on('postgres_changes', {
@@ -36,10 +37,15 @@ export function NotificationBadge() {
       })
       .subscribe();
 
+    // Listen for manual "mark all read" events from MarkAllReadButton
+    const handleRead = () => setCount(0);
+    window.addEventListener('notifications-read', handleRead);
+
     return () => {
       supabase.removeChannel(channel);
+      window.removeEventListener('notifications-read', handleRead);
     };
-  }, []);
+  }, [fetchCount]);
 
   if (count === 0) return null;
 

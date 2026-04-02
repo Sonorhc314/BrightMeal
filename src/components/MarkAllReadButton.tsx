@@ -18,6 +18,8 @@ export function MarkAllReadButton() {
       .eq('user_id', user.id)
       .eq('read', false);
 
+    // Signal the NotificationBadge to re-fetch immediately
+    window.dispatchEvent(new Event('notifications-read'));
     router.refresh();
   };
 

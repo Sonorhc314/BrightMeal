@@ -30,7 +30,20 @@ export interface Profile {
   vehicle_type: string | null;
   license_plate: string | null;
   avatar_url: string | null;
+  total_points: number;
+  total_kg_impact: number;
+  current_streak: number;
+  best_streak: number;
+  last_active_week: string;
+  total_donations_completed: number;
   created_at: string;
+}
+
+export interface UserBadge {
+  id: string;
+  user_id: string;
+  badge_id: string;
+  earned_at: string;
 }
 
 export interface Donation {

@@ -1,11 +1,12 @@
 import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
-import { Plus, Package, TrendingUp, Heart, Leaf } from 'lucide-react';
+import { Plus, Package, Heart, Leaf, Cloud } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { DonationCard } from '@/components/DonationCard';
 import { StatsCard } from '@/components/StatsCard';
 import { RealtimeRefresher } from '@/components/RealtimeRefresher';
+import { formatCO2e } from '@/lib/gamification-config';
 import type { Donation } from '@/lib/types';
 
 function getGreeting(): string {
@@ -86,10 +87,10 @@ export default async function DonorHomePage() {
             accent="green"
           />
           <StatsCard
-            label="Impact"
-            value={`${((deliveredCount || 0) * 5).toFixed(0)}kg`}
-            icon={<TrendingUp className="h-4 w-4" />}
-            trend="saved"
+            label="CO2e Saved"
+            value={formatCO2e(profile.total_kg_impact)}
+            icon={<Cloud className="h-4 w-4" />}
+            trend="impact"
             accent="green"
           />
         </div>

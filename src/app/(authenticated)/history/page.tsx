@@ -1,7 +1,8 @@
 import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
-import { Clock, CheckCircle2, TrendingUp } from 'lucide-react';
+import { Clock, CheckCircle2, Cloud } from 'lucide-react';
 import { SearchFilter } from '@/components/SearchFilter';
+import { formatCO2e } from '@/lib/gamification-config';
 import type { Donation, UserRole } from '@/lib/types';
 
 export default async function HistoryPage() {
@@ -68,11 +69,11 @@ export default async function HistoryPage() {
             </div>
             <div className="flex flex-1 items-center gap-3 rounded-2xl border border-border bg-white p-3 lg:p-4 shadow-sm">
               <div className="flex h-9 w-9 lg:h-10 lg:w-10 items-center justify-center rounded-lg bg-brand-green-light">
-                <TrendingUp className="h-4 w-4 lg:h-5 lg:w-5 text-brand-green" />
+                <Cloud className="h-4 w-4 lg:h-5 lg:w-5 text-brand-green" />
               </div>
               <div>
-                <p className="text-lg lg:text-xl font-bold text-foreground">{(totalDelivered * 5).toFixed(0)}{role === 'donor' ? 'kg' : ''}</p>
-                <p className="text-xs lg:text-sm text-muted-foreground">{role === 'driver' ? 'Miles' : 'Food saved'}</p>
+                <p className="text-lg lg:text-xl font-bold text-foreground">{formatCO2e(profile.total_kg_impact)}</p>
+                <p className="text-xs lg:text-sm text-muted-foreground">CO2e saved</p>
               </div>
             </div>
           </div>

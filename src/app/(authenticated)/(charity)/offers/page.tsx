@@ -1,10 +1,11 @@
 import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
-import { HandHeart, Package, Heart, TrendingUp } from 'lucide-react';
+import { HandHeart, Package, Heart, Cloud } from 'lucide-react';
 import { DonationCard } from '@/components/DonationCard';
 import { SearchFilter } from '@/components/SearchFilter';
 import { StatsCard } from '@/components/StatsCard';
 import { RealtimeRefresher } from '@/components/RealtimeRefresher';
+import { formatMeals } from '@/lib/gamification-config';
 import type { Donation } from '@/lib/types';
 
 export default async function OffersPage() {
@@ -83,8 +84,8 @@ export default async function OffersPage() {
         />
         <StatsCard
           label="Meals Saved"
-          value={`${((deliveredCount || 0) * 5).toFixed(0)}`}
-          icon={<TrendingUp className="h-4 w-4" />}
+          value={formatMeals(profile.total_kg_impact)}
+          icon={<Cloud className="h-4 w-4" />}
           trend="impact"
           accent="purple"
         />

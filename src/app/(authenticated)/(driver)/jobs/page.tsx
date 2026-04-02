@@ -1,6 +1,6 @@
 import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
-import { Truck, Package, TrendingUp, MapPin } from 'lucide-react';
+import { Truck, Package, Flame, MapPin } from 'lucide-react';
 import { DonationCard } from '@/components/DonationCard';
 import { SearchFilter } from '@/components/SearchFilter';
 import { StatsCard } from '@/components/StatsCard';
@@ -83,10 +83,10 @@ export default async function JobsPage() {
           accent="blue"
         />
         <StatsCard
-          label="Distance"
-          value={`${((deliveredCount || 0) * 3.2).toFixed(0)}mi`}
-          icon={<TrendingUp className="h-4 w-4" />}
-          trend="total"
+          label="Points"
+          value={profile.total_points.toLocaleString()}
+          icon={<Flame className="h-4 w-4" />}
+          trend="earned"
           accent="blue"
         />
       </div>

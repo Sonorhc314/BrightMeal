@@ -1,12 +1,14 @@
 import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 import {
-  Package, TrendingUp, Heart, HandHeart, Truck,
-  Star, MapPin,
+  Package, Heart, HandHeart, Truck, Cloud,
+  Flame, MapPin, Trophy,
 } from 'lucide-react';
 import { LogoutButton } from '@/components/LogoutButton';
 import { ProfileEditor } from '@/components/ProfileEditor';
-import type { UserRole, Profile } from '@/lib/types';
+import { BadgeGrid } from '@/components/BadgeGrid';
+import { formatCO2e, formatMeals } from '@/lib/gamification-config';
+import type { UserRole, Profile, UserBadge } from '@/lib/types';
 
 export default async function ProfilePage() {
   const supabase = await createClient();
@@ -25,14 +27,17 @@ export default async function ProfilePage() {
   const role = profile.role as UserRole;
   const initial = profile.name?.charAt(0)?.toUpperCase() || '?';
 
-  // Stats queries (parallelized + deduplicated)
+  // Stats + badges + rank queries (parallelized)
   const roleColumn = role === 'donor' ? 'donor_id' : role === 'charity' ? 'charity_id' : 'driver_id';
-  const [{ count: t }, { count: d }] = await Promise.all([
+  const [{ count: t }, { count: d }, { data: earnedBadges }, { count: usersAbove }] = await Promise.all([
     supabase.from('donations').select('*', { count: 'exact', head: true }).eq(roleColumn, user.id),
     supabase.from('donations').select('*', { count: 'exact', head: true }).eq(roleColumn, user.id).eq('status', 'delivered'),
+    supabase.from('user_badges').select('*').eq('user_id', user.id),
+    supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', role).gt('total_points', profile.total_points),
   ]);
   const totalCount = t || 0;
   const deliveredCount = d || 0;
+  const currentRank = (usersAbove || 0) + 1;
 
   const avatarGradient = role === 'donor'
     ? 'from-brand-green to-emerald-600'
@@ -44,8 +49,16 @@ export default async function ProfilePage() {
   const accentText = role === 'donor' ? 'text-brand-green' : role === 'charity' ? 'text-brand-purple' : 'text-blue-600';
 
   const impactValue = role === 'driver'
-    ? `${(deliveredCount * 3.2).toFixed(0)}mi`
-    : `${(deliveredCount * 5).toFixed(0)}${role === 'donor' ? 'kg' : ''}`;
+    ? formatCO2e(profile.total_kg_impact)
+    : role === 'donor'
+    ? formatCO2e(profile.total_kg_impact)
+    : formatMeals(profile.total_kg_impact);
+
+  const impactLabel = role === 'driver'
+    ? 'CO2e Saved'
+    : role === 'donor'
+    ? 'CO2e Saved'
+    : 'Meals';
 
   return (
     <>
@@ -65,10 +78,17 @@ export default async function ProfilePage() {
                     {profile.business_type}
                   </span>
                 )}
-                {role === 'driver' && (
-                  <span className="flex items-center gap-1 rounded-full bg-white/20 px-3 py-0.5 text-xs font-medium text-white backdrop-blur-sm">
-                    <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
-                    4.9 rating
+                <span className="flex items-center gap-1 rounded-full bg-white/20 px-3 py-0.5 text-xs font-medium text-white backdrop-blur-sm">
+                  <Flame className="h-3 w-3 text-amber-400" />
+                  {profile.total_points.toLocaleString()} pts
+                </span>
+                <span className="flex items-center gap-1 rounded-full bg-white/20 px-3 py-0.5 text-xs font-medium text-white backdrop-blur-sm">
+                  <Trophy className="h-3 w-3 text-amber-400" />
+                  Rank #{currentRank}
+                </span>
+                {profile.current_streak >= 2 && (
+                  <span className="rounded-full bg-white/20 px-3 py-0.5 text-xs font-medium text-white backdrop-blur-sm">
+                    &#x1F525; {profile.current_streak}w streak
                   </span>
                 )}
                 {profile.location && (
@@ -83,14 +103,12 @@ export default async function ProfilePage() {
         </div>
 
         <div className="px-5 pt-6 lg:px-8 lg:pt-8">
-          {/* Single-column layout: Stats → Account Details → Logout */}
+          {/* Single-column layout: Stats → Badges → Account Details → Logout */}
           <div className="space-y-5 lg:space-y-6">
             {/* Impact Stats */}
             <div className="animate-[fadeUp_0.6s_ease-out_0.1s_both]">
               <div className="rounded-2xl border border-border bg-white p-4 lg:p-5 shadow-sm">
-                <h2 className="mb-4 text-sm font-semibold text-foreground">
-                  {role === 'driver' ? 'Your Stats' : 'Your Impact'}
-                </h2>
+                <h2 className="mb-4 text-sm font-semibold text-foreground">Your Impact</h2>
                 <div className="grid grid-cols-3 gap-3">
                   <div className="text-center">
                     <div className={`mx-auto mb-2 flex h-10 w-10 items-center justify-center rounded-xl ${accentBg}`}>
@@ -108,12 +126,27 @@ export default async function ProfilePage() {
                   </div>
                   <div className="text-center">
                     <div className={`mx-auto mb-2 flex h-10 w-10 items-center justify-center rounded-xl ${accentBg}`}>
-                      <TrendingUp className={`h-5 w-5 ${accentText}`} />
+                      <Cloud className={`h-5 w-5 ${accentText}`} />
                     </div>
                     <p className="text-xl font-bold text-foreground">{impactValue}</p>
-                    <p className="text-xs text-muted-foreground">{role === 'donor' ? 'Saved' : role === 'charity' ? 'Meals' : 'Distance'}</p>
+                    <p className="text-xs text-muted-foreground">{impactLabel}</p>
                   </div>
                 </div>
+              </div>
+            </div>
+
+            {/* Badges */}
+            <div className="animate-[fadeUp_0.6s_ease-out_0.12s_both]">
+              <div className="rounded-2xl border border-border bg-white p-4 lg:p-5 shadow-sm">
+                <h2 className="mb-4 text-sm font-semibold text-foreground">
+                  Your Badges
+                  {(earnedBadges || []).length > 0 && (
+                    <span className="ml-2 text-xs font-normal text-muted-foreground">
+                      {(earnedBadges || []).length} earned
+                    </span>
+                  )}
+                </h2>
+                <BadgeGrid role={role} earnedBadges={(earnedBadges || []) as UserBadge[]} />
               </div>
             </div>
 

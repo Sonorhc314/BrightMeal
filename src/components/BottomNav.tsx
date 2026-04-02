@@ -12,6 +12,7 @@ import {
   User,
   Bell,
   Sprout,
+  Trophy,
 } from 'lucide-react';
 import { NotificationBadge } from '@/components/NotificationBadge';
 import type { UserRole } from '@/lib/types';
@@ -25,18 +26,21 @@ interface NavItem {
 const navItems: Record<UserRole, NavItem[]> = {
   donor: [
     { label: 'Home', href: '/home', icon: <Home className="h-5 w-5" /> },
+    { label: 'Rank', href: '/leaderboard', icon: <Trophy className="h-5 w-5" /> },
     { label: 'History', href: '/history', icon: <Clock className="h-5 w-5" /> },
     { label: 'Alerts', href: '/notifications', icon: <Bell className="h-5 w-5" /> },
     { label: 'Profile', href: '/profile', icon: <User className="h-5 w-5" /> },
   ],
   charity: [
     { label: 'Offers', href: '/offers', icon: <HandHeart className="h-5 w-5" /> },
+    { label: 'Rank', href: '/leaderboard', icon: <Trophy className="h-5 w-5" /> },
     { label: 'History', href: '/history', icon: <Clock className="h-5 w-5" /> },
     { label: 'Alerts', href: '/notifications', icon: <Bell className="h-5 w-5" /> },
     { label: 'Profile', href: '/profile', icon: <User className="h-5 w-5" /> },
   ],
   driver: [
     { label: 'Jobs', href: '/jobs', icon: <Truck className="h-5 w-5" /> },
+    { label: 'Rank', href: '/leaderboard', icon: <Trophy className="h-5 w-5" /> },
     { label: 'History', href: '/history', icon: <Clock className="h-5 w-5" /> },
     { label: 'Alerts', href: '/notifications', icon: <Bell className="h-5 w-5" /> },
     { label: 'Profile', href: '/profile', icon: <User className="h-5 w-5" /> },
@@ -47,6 +51,7 @@ function inferRoleFromPath(pathname: string): UserRole | null {
   if (pathname.startsWith('/home') || pathname.startsWith('/post') || pathname.startsWith('/donations')) return 'donor';
   if (pathname.startsWith('/offers')) return 'charity';
   if (pathname.startsWith('/jobs')) return 'driver';
+  // Shared pages: /leaderboard, /profile, /history, /notifications → null (fetch from DB)
   return null;
 }
 
