@@ -43,8 +43,9 @@ export function ProfileEditor({ profile, role, accentBg, accentText }: ProfileEd
       updates.license_plate = licensePlate || null;
     }
 
-    await supabase.from('profiles').update(updates).eq('id', profile.id);
+    const { error } = await supabase.from('profiles').update(updates).eq('id', profile.id);
     setSaving(false);
+    if (error) return;
     setSaved(true);
     setEditing(false);
     setTimeout(() => setSaved(false), 2000);

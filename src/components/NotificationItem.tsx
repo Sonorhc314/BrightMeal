@@ -6,6 +6,7 @@ import {
   Bell,
   HandHeart,
 } from 'lucide-react';
+import { getTimeAgo } from '@/lib/utils';
 import type { Notification, NotificationType } from '@/lib/types';
 
 const iconConfig: Record<NotificationType, { icon: React.ReactNode; bg: string }> = {
@@ -18,14 +19,25 @@ const iconConfig: Record<NotificationType, { icon: React.ReactNode; bg: string }
   pickup_reminder: { icon: <Bell className="h-5 w-5 text-amber-600" />, bg: 'bg-amber-100' },
 };
 
+// Notification types targeted at each role
+const charityTypes: NotificationType[] = ['new_offer'];
+const driverTypes: NotificationType[] = ['new_job', 'pickup_reminder'];
+
+function getDonationHref(donationId: string, type: NotificationType): string {
+  if (charityTypes.includes(type)) return `/offers/${donationId}`;
+  if (driverTypes.includes(type)) return `/jobs/${donationId}`;
+  return `/donations/${donationId}`;
+}
+
 export function NotificationItem({ notification }: { notification: Notification }) {
   const timeAgo = getTimeAgo(new Date(notification.created_at));
   const config = iconConfig[notification.type] || { icon: <Bell className="h-5 w-5" />, bg: 'bg-secondary' };
+  const href = notification.donation_id
+    ? getDonationHref(notification.donation_id, notification.type)
+    : '#';
 
   return (
-    <Link
-      href={notification.donation_id ? `/donations/${notification.donation_id}` : '#'}
-    >
+    <Link href={href}>
       <div
         className={`relative flex gap-3 rounded-xl p-3 transition-all hover:bg-secondary/50 ${
           notification.read
@@ -53,18 +65,4 @@ export function NotificationItem({ notification }: { notification: Notification 
       </div>
     </Link>
   );
-}
-
-function getTimeAgo(date: Date): string {
-  const now = new Date();
-  const diffMs = now.getTime() - date.getTime();
-  const diffMin = Math.floor(diffMs / 60000);
-  const diffHr = Math.floor(diffMin / 60);
-  const diffDay = Math.floor(diffHr / 24);
-
-  if (diffMin < 1) return 'Just now';
-  if (diffMin < 60) return `${diffMin}m ago`;
-  if (diffHr < 24) return `${diffHr}h ago`;
-  if (diffDay < 7) return `${diffDay}d ago`;
-  return date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
 }

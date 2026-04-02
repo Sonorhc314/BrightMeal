@@ -4,15 +4,15 @@ import { useState, useMemo } from 'react';
 import { Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { DonationCard } from '@/components/DonationCard';
+import { categoryConfig } from '@/lib/donation-config';
 import type { Donation, DonationCategory } from '@/lib/types';
 
 const categoryOptions: { value: DonationCategory | 'all'; label: string }[] = [
   { value: 'all', label: 'All' },
-  { value: 'cooked_meals', label: 'Cooked Meals' },
-  { value: 'fresh_produce', label: 'Fresh Produce' },
-  { value: 'bakery', label: 'Bakery' },
-  { value: 'dairy', label: 'Dairy' },
-  { value: 'other', label: 'Other' },
+  ...Object.entries(categoryConfig).map(([value, { label }]) => ({
+    value: value as DonationCategory,
+    label,
+  })),
 ];
 
 interface SearchFilterProps {
