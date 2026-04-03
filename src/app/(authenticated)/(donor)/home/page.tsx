@@ -1,7 +1,8 @@
 import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
-import { Plus, Package, Heart, Leaf, Cloud } from 'lucide-react';
+import Image from 'next/image';
+import { Plus, Package, Heart, Cloud } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { DonationCard } from '@/components/DonationCard';
 import { StatsCard } from '@/components/StatsCard';
@@ -52,7 +53,7 @@ export default async function DonorHomePage() {
   const activeCount = activeDonations?.length || 0;
 
   return (
-    <div className="relative px-5 pt-6 pb-6 overflow-hidden lg:px-8 lg:pt-10 lg:pb-10">
+    <div className="relative mx-auto max-w-5xl px-5 pt-6 pb-6 overflow-hidden lg:px-8 lg:pt-10 lg:pb-10">
       <RealtimeRefresher table="donations" filter={`donor_id=eq.${user.id}`} />
 
       {/* Organic background shapes */}
@@ -65,15 +66,12 @@ export default async function DonorHomePage() {
           <p className="text-sm lg:text-base text-muted-foreground">{getGreeting()},</p>
           <h1 className="text-2xl lg:text-3xl font-bold text-foreground">{profile.name}</h1>
         </div>
-        <div className="flex h-10 w-10 lg:h-12 lg:w-12 items-center justify-center rounded-full bg-brand-green-light shadow-sm">
-          <Leaf className="h-5 w-5 lg:h-6 lg:w-6 text-brand-green" />
-        </div>
+        <Image src="/logo-mark.svg" alt="BrightMeal" width={48} height={48} className="h-10 w-10 lg:h-12 lg:w-12" />
       </div>
 
-      {/* Top row: Stats + CTA side by side on desktop */}
-      <div className="relative mb-6 lg:mb-8 lg:flex lg:items-start lg:gap-6 animate-[fadeUp_0.6s_ease-out_0.1s_both]">
-        {/* Impact Stats */}
-        <div className="grid grid-cols-3 gap-3 lg:gap-4 lg:flex-1">
+      {/* Stats row */}
+      <div className="relative mb-4 lg:mb-6 animate-[fadeUp_0.6s_ease-out_0.1s_both]">
+        <div className="grid grid-cols-3 gap-3 lg:gap-4">
           <StatsCard
             label="Total Posted"
             value={totalDonations || 0}
@@ -94,10 +92,12 @@ export default async function DonorHomePage() {
             accent="green"
           />
         </div>
+      </div>
 
-        {/* Post New Button — inline on desktop */}
-        <Link href="/post" className="mt-4 block lg:mt-0 lg:shrink-0">
-          <Button className="h-12 w-full lg:w-auto lg:px-8 rounded-xl bg-brand-green text-base font-semibold shadow-md shadow-brand-green/20 hover:bg-brand-green/90 active:scale-[0.98] transition-all">
+      {/* Post New Button */}
+      <div className="relative mb-6 lg:mb-8 animate-[fadeUp_0.6s_ease-out_0.15s_both]">
+        <Link href="/post">
+          <Button className="h-12 w-full rounded-xl bg-brand-green text-base font-semibold shadow-md shadow-brand-green/20 hover:bg-brand-green/90 active:scale-[0.98] transition-all lg:h-11 lg:w-auto lg:px-8 lg:rounded-lg">
             <Plus className="mr-2 h-5 w-5" />
             Post Surplus Food
           </Button>

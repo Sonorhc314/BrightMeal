@@ -7,7 +7,8 @@ import { createClient } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Leaf, ArrowLeft, Loader2, Building2, Heart, Truck } from 'lucide-react';
+import Image from 'next/image';
+import { ArrowLeft, Loader2, Building2, Heart, Truck } from 'lucide-react';
 import { AuthLayout } from '@/components/AuthLayout';
 import type { UserRole } from '@/lib/types';
 
@@ -83,11 +84,17 @@ function SignupForm() {
     }
   };
 
+  const roleActiveStyle: Record<UserRole, string> = {
+    donor: 'border-brand-green bg-brand-green-light text-brand-green',
+    charity: 'border-brand-purple bg-brand-purple-light text-brand-purple',
+    driver: 'border-brand-blue bg-brand-blue-light text-brand-blue',
+  };
+
   return (
-    <div className="flex flex-1 flex-col px-6 pb-8 pt-4 lg:max-w-lg lg:py-8">
+    <>
       {/* Back link */}
       <div className="mb-6 animate-[fadeUp_0.8s_ease-out_both]">
-        <Link href="/" className="inline-flex items-center gap-2 text-sm text-muted-foreground">
+        <Link href="/" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
           <ArrowLeft className="h-4 w-4" />
           Back
         </Link>
@@ -95,8 +102,8 @@ function SignupForm() {
 
       {/* Logo — mobile only */}
       <div className="mb-8 flex flex-col items-center animate-[fadeUp_0.8s_ease-out_0.1s_both] lg:items-start">
-        <div className="mb-3 flex h-16 w-16 items-center justify-center rounded-2xl bg-brand-green shadow-lg shadow-brand-green/20 lg:hidden">
-          <Leaf className="h-8 w-8 text-white" />
+        <div className="mb-4 lg:hidden">
+          <Image src="/logo-mark.svg" alt="BrightMeal" width={72} height={72} className="h-[72px] w-[72px]" />
         </div>
         <h1 className="text-2xl lg:text-3xl font-bold text-foreground">Create account</h1>
         <p className="mt-1 text-muted-foreground lg:text-base">Join the BrightMeal community</p>
@@ -115,8 +122,8 @@ function SignupForm() {
                 onClick={() => setRole(r.value)}
                 className={`flex items-center justify-center gap-2 rounded-xl border-2 p-3 text-sm font-medium transition-all ${
                   role === r.value
-                    ? 'border-brand-green bg-brand-green-light text-brand-green'
-                    : 'border-border bg-white text-muted-foreground hover:border-brand-green/30'
+                    ? roleActiveStyle[r.value]
+                    : 'border-border bg-white text-muted-foreground hover:border-border/80 lg:bg-cream'
                 }`}
               >
                 {r.icon}
@@ -136,7 +143,7 @@ function SignupForm() {
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
-              className="h-12 rounded-xl bg-white"
+              className="h-12 rounded-xl bg-white lg:bg-cream"
             />
           </div>
 
@@ -149,7 +156,7 @@ function SignupForm() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="h-12 rounded-xl bg-white"
+              className="h-12 rounded-xl bg-white lg:bg-cream"
             />
           </div>
         </div>
@@ -165,7 +172,7 @@ function SignupForm() {
               onChange={(e) => setPassword(e.target.value)}
               required
               minLength={6}
-              className="h-12 rounded-xl bg-white"
+              className="h-12 rounded-xl bg-white lg:bg-cream"
             />
           </div>
 
@@ -177,7 +184,7 @@ function SignupForm() {
               placeholder="+44 7700 900000"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
-              className="h-12 rounded-xl bg-white"
+              className="h-12 rounded-xl bg-white lg:bg-cream"
             />
           </div>
         </div>
@@ -190,7 +197,7 @@ function SignupForm() {
               placeholder="e.g. Bath, UK"
               value={location}
               onChange={(e) => setLocation(e.target.value)}
-              className="h-12 rounded-xl bg-white"
+              className="h-12 rounded-xl bg-white lg:bg-cream"
             />
           </div>
 
@@ -203,7 +210,7 @@ function SignupForm() {
                 placeholder="e.g. Restaurant & Catering"
                 value={businessType}
                 onChange={(e) => setBusinessType(e.target.value)}
-                className="h-12 rounded-xl bg-white"
+                className="h-12 rounded-xl bg-white lg:bg-cream"
               />
             </div>
           )}
@@ -216,7 +223,7 @@ function SignupForm() {
                 placeholder="e.g. Honda Civic"
                 value={vehicleType}
                 onChange={(e) => setVehicleType(e.target.value)}
-                className="h-12 rounded-xl bg-white"
+                className="h-12 rounded-xl bg-white lg:bg-cream"
               />
             </div>
           )}
@@ -231,7 +238,7 @@ function SignupForm() {
                 placeholder="e.g. AB12 CDE"
                 value={licensePlate}
                 onChange={(e) => setLicensePlate(e.target.value)}
-                className="h-12 rounded-xl bg-white"
+                className="h-12 rounded-xl bg-white lg:bg-cream"
               />
             </div>
           </div>
@@ -246,7 +253,7 @@ function SignupForm() {
         <Button
           type="submit"
           disabled={loading}
-          className="mt-2 h-12 rounded-xl bg-brand-green text-base font-semibold shadow-md shadow-brand-green/20 hover:bg-brand-green/90 active:scale-[0.98] transition-all lg:w-auto lg:px-12 lg:self-start"
+          className="mt-2 h-12 rounded-xl bg-brand-olive text-base font-semibold shadow-md shadow-brand-olive/20 hover:bg-brand-olive/90 active:scale-[0.98] transition-all lg:w-auto lg:px-12 lg:self-start"
         >
           {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : 'Create account'}
         </Button>
@@ -254,13 +261,13 @@ function SignupForm() {
         <div className="py-4 text-center lg:text-left">
           <p className="text-sm text-muted-foreground">
             Already have an account?{' '}
-            <Link href="/login" className="font-semibold text-brand-green">
+            <Link href="/login" className="font-semibold text-brand-olive hover:underline">
               Log in
             </Link>
           </p>
         </div>
       </form>
-    </div>
+    </>
   );
 }
 

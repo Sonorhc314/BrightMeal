@@ -50,7 +50,7 @@ export default async function OffersPage() {
   const availableCount = availableOffers?.length || 0;
 
   return (
-    <div className="relative px-5 pt-6 pb-6 overflow-hidden lg:px-8 lg:pt-10 lg:pb-10">
+    <div className="relative mx-auto max-w-5xl px-5 pt-6 pb-6 overflow-hidden lg:px-8 lg:pt-10 lg:pb-10">
       <RealtimeRefresher table="donations" />
 
       {/* Organic background shapes */}

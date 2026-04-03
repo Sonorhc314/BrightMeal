@@ -97,7 +97,7 @@ export default function OfferDetailsPage() {
   const isMyOrder = donation.charity_id === userId;
 
   return (
-    <div className="relative px-5 pt-4 pb-8 overflow-hidden lg:px-8 lg:pt-8 lg:pb-10">
+    <div className="relative mx-auto max-w-5xl px-5 pt-4 pb-8 overflow-hidden lg:px-8 lg:pt-8 lg:pb-10">
       {/* Organic background shapes */}
       <div className="pointer-events-none absolute -right-20 -top-20 h-72 w-72 rounded-full bg-brand-purple/[0.05] blur-3xl" />
       <div className="pointer-events-none absolute -left-16 bottom-1/4 h-56 w-56 rounded-full bg-brand-green/[0.03] blur-3xl" />

@@ -50,7 +50,7 @@ export default async function HistoryPage() {
   const totalDelivered = deliveredDonations?.length || 0;
 
   return (
-    <div className="px-5 pt-6 lg:px-8 lg:pt-10">
+    <div className="mx-auto max-w-5xl px-5 pt-6 lg:px-8 lg:pt-10">
         <div className="mb-6 lg:mb-8 animate-[fadeUp_0.6s_ease-out_both]">
           <h1 className="text-2xl lg:text-3xl font-bold text-foreground">{title}</h1>
         </div>

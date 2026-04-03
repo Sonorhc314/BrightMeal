@@ -40,10 +40,10 @@ export default async function ProfilePage() {
   const currentRank = (usersAbove || 0) + 1;
 
   const avatarGradient = role === 'donor'
-    ? 'from-brand-green to-emerald-600'
+    ? 'from-brand-olive to-brand-dark'
     : role === 'charity'
-    ? 'from-brand-purple to-violet-600'
-    : 'from-blue-500 to-blue-700';
+    ? 'from-brand-purple to-violet-800'
+    : 'from-blue-600 to-blue-900';
 
   const accentBg = role === 'donor' ? 'bg-brand-green-light' : role === 'charity' ? 'bg-brand-purple-light' : 'bg-blue-100';
   const accentText = role === 'donor' ? 'text-brand-green' : role === 'charity' ? 'text-brand-purple' : 'text-blue-600';
@@ -62,10 +62,11 @@ export default async function ProfilePage() {
 
   return (
     <>
-      {/* Gradient Profile Header */}
-      <div className={`relative overflow-hidden bg-gradient-to-br ${avatarGradient} px-5 pb-8 pt-8 lg:px-8 lg:pb-10 lg:pt-12`}>
+      {/* Gradient Profile Header — full bleed */}
+      <div className={`relative overflow-hidden bg-gradient-to-br ${avatarGradient} px-5 pb-10 pt-10 lg:px-8 lg:pb-12 lg:pt-14`}>
           <div className="pointer-events-none absolute inset-0 opacity-10" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E")` }} />
-          <div className="relative flex flex-col items-center text-center animate-[fadeUp_0.6s_ease-out_both] lg:flex-row lg:items-center lg:text-left lg:gap-6">
+          <div className="pointer-events-none absolute right-0 top-0 h-full w-1/2 bg-gradient-to-l from-white/[0.04] to-transparent" />
+          <div className="relative mx-auto max-w-5xl flex flex-col items-center text-center animate-[fadeUp_0.6s_ease-out_both] lg:flex-row lg:items-center lg:text-left lg:gap-8">
             <div className="mb-3 lg:mb-0 flex h-20 w-20 lg:h-24 lg:w-24 items-center justify-center rounded-full bg-white/20 text-3xl lg:text-4xl font-bold text-white shadow-lg backdrop-blur-sm shrink-0">
               {initial}
             </div>
@@ -102,7 +103,7 @@ export default async function ProfilePage() {
           </div>
         </div>
 
-        <div className="px-5 pt-6 lg:px-8 lg:pt-8">
+        <div className="mx-auto max-w-5xl px-5 pt-6 lg:px-8 lg:pt-8">
           {/* Single-column layout: Stats → Badges → Account Details → Logout */}
           <div className="space-y-5 lg:space-y-6">
             {/* Impact Stats */}

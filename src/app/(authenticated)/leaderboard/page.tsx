@@ -67,7 +67,7 @@ export default async function LeaderboardPage() {
     .reduce((sum, u) => sum + Number(u.total_kg_impact), 0) / 3;
 
   return (
-    <div className="relative px-5 pt-6 pb-6 overflow-hidden lg:px-8 lg:pt-10 lg:pb-10">
+    <div className="relative mx-auto max-w-5xl px-5 pt-6 pb-6 overflow-hidden lg:px-8 lg:pt-10 lg:pb-10">
       {/* Background shapes */}
       <div className="pointer-events-none absolute -right-20 -top-20 h-72 w-72 rounded-full bg-amber-500/[0.05] blur-3xl" />
       <div className="pointer-events-none absolute -left-16 top-1/2 h-56 w-56 rounded-full bg-brand-green/[0.03] blur-3xl" />
@@ -101,7 +101,7 @@ export default async function LeaderboardPage() {
               </div>
               <div className="text-right">
                 <div className="flex items-center gap-1.5">
-                  <Cloud className="h-4 w-4 text-emerald-500" />
+                  <Cloud className="h-4 w-4 text-brand-olive-green" />
                   <span className="text-lg font-bold text-foreground">{formatCO2e(profile.total_kg_impact)}</span>
                 </div>
                 <p className="text-[10px] text-muted-foreground">CO2e saved</p>
@@ -119,7 +119,7 @@ export default async function LeaderboardPage() {
           <p className="text-[10px] text-muted-foreground">Food Saved</p>
         </div>
         <div className="rounded-2xl border border-border bg-white p-3 text-center shadow-sm">
-          <Cloud className="mx-auto mb-1 h-5 w-5 text-emerald-500" />
+          <Cloud className="mx-auto mb-1 h-5 w-5 text-brand-olive-green" />
           <p className="text-lg font-bold text-foreground">{formatCO2e(totalKg)}</p>
           <p className="text-[10px] text-muted-foreground">CO2e Avoided</p>
         </div>

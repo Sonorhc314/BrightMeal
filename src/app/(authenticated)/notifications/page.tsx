@@ -57,7 +57,7 @@ export default async function NotificationsPage() {
   }
 
   return (
-    <div className="px-5 pt-6 lg:px-8 lg:pt-10">
+    <div className="mx-auto max-w-5xl px-5 pt-6 lg:px-8 lg:pt-10">
         <RealtimeRefresher table="notifications" filter={`user_id=eq.${user.id}`} />
         <div className="mb-6 lg:mb-8 flex items-center justify-between animate-[fadeUp_0.6s_ease-out_both]">
           <div>

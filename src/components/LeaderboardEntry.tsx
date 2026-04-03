@@ -38,7 +38,7 @@ export function LeaderboardEntry({
       className={`flex items-center gap-3 rounded-xl border p-3 transition-all ${
         isCurrentUser
           ? 'border-brand-green bg-brand-green/5 shadow-sm'
-          : 'border-border bg-white hover:shadow-sm'
+          : 'border-border/50 bg-white hover:shadow-sm lg:border-transparent lg:hover:border-border/50'
       }`}
     >
       {/* Rank */}

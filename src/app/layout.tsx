@@ -1,9 +1,9 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { DM_Sans, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const dmSans = DM_Sans({
+  variable: "--font-dm-sans",
   subsets: ["latin"],
 });
 
@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "BrightMeal - Surplus Food Redistribution",
-  description: "Connecting donors, charities, and drivers to reduce food waste and feed communities.",
+  title: "BrightMeal - Food Rescue & Community Support",
+  description: "A brighter plate for everyone. Connecting donors, charities, and drivers to reduce food waste and feed communities.",
 };
 
 export const viewport: Viewport = {
@@ -22,7 +22,7 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
-  themeColor: "#3B7A57",
+  themeColor: "#604605",
 };
 
 export default function RootLayout({
@@ -33,7 +33,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased`}
+        className={`${dmSans.variable} ${geistMono.variable} font-sans antialiased`}
       >
         {children}
       </body>

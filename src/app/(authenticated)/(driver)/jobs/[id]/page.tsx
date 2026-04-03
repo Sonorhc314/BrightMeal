@@ -141,7 +141,7 @@ export default function JobDetailsPage() {
   const canMarkDelivered = isMyJob && donation.status === 'picked_up';
 
   return (
-    <div className="relative px-5 pt-4 pb-8 overflow-hidden lg:px-8 lg:pt-8 lg:pb-10">
+    <div className="relative mx-auto max-w-5xl px-5 pt-4 pb-8 overflow-hidden lg:px-8 lg:pt-8 lg:pb-10">
       {/* Organic background shapes */}
       <div className="pointer-events-none absolute -right-20 -top-20 h-72 w-72 rounded-full bg-blue-500/[0.05] blur-3xl" />
       <div className="pointer-events-none absolute -left-16 bottom-1/4 h-56 w-56 rounded-full bg-brand-green/[0.03] blur-3xl" />
@@ -319,7 +319,7 @@ export default function JobDetailsPage() {
           <Button
             onClick={handleDelivered}
             disabled={actionLoading}
-            className="h-12 w-full rounded-xl bg-gradient-to-r from-brand-green to-emerald-600 text-base font-semibold shadow-md shadow-brand-green/20 hover:from-brand-green/90 hover:to-emerald-700 active:scale-[0.98] transition-all"
+            className="h-12 w-full rounded-xl bg-blue-600 text-base font-semibold shadow-md shadow-blue-600/20 hover:bg-blue-700 active:scale-[0.98] transition-all"
           >
             {actionLoading ? (
               <Loader2 className="h-5 w-5 animate-spin" />
