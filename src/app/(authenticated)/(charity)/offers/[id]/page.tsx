@@ -257,22 +257,17 @@ export default function OfferDetailsPage() {
           <Button
             onClick={handleAccept}
             disabled={accepting}
-            className="h-12 w-full rounded-xl bg-brand-purple text-base font-semibold shadow-md shadow-brand-purple/20 hover:bg-brand-purple/90 active:scale-[0.98] transition-all"
+            className="h-14 w-full rounded-xl bg-brand-olive-green text-base font-bold uppercase tracking-wider shadow-md shadow-brand-olive-green/20 hover:bg-brand-olive-green/90 active:scale-[0.98] transition-all"
           >
-            {accepting ? <Loader2 className="h-5 w-5 animate-spin" /> : (
-              <>
-                <Heart className="mr-2 h-5 w-5" />
-                Accept Offer
-              </>
-            )}
+            {accepting ? <Loader2 className="h-5 w-5 animate-spin" /> : 'Accept Offer'}
           </Button>
 
           <Link href="/offers">
             <Button
               variant="outline"
-              className="h-12 w-full rounded-xl border-border text-base font-semibold active:scale-[0.98] transition-all"
+              className="h-14 w-full rounded-xl border-2 border-brand-olive-green/30 bg-cream text-base font-bold uppercase tracking-wider text-brand-olive active:scale-[0.98] transition-all hover:bg-brand-olive-green/5"
             >
-              Back to Offers
+              Decline Offer
             </Button>
           </Link>
         </div>

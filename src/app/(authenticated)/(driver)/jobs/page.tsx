@@ -85,9 +85,8 @@ export default async function JobsPage() {
         <StatsCard
           label="Points"
           value={profile.total_points.toLocaleString()}
-          icon={<Flame className="h-4 w-4" />}
-          trend="earned"
-          accent="blue"
+          icon={<Flame className="h-4 w-4 text-white/70" />}
+          variant="impact"
         />
       </div>
 

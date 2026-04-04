@@ -4,6 +4,7 @@ interface StatsCardProps {
   icon: React.ReactNode;
   trend?: string;
   accent?: 'green' | 'purple' | 'blue';
+  variant?: 'default' | 'impact';
 }
 
 const accentStyles = {
@@ -12,7 +13,24 @@ const accentStyles = {
   blue: 'bg-brand-blue-light text-brand-blue',
 };
 
-export function StatsCard({ label, value, icon, trend, accent = 'green' }: StatsCardProps) {
+export function StatsCard({ label, value, icon, trend, accent = 'green', variant = 'default' }: StatsCardProps) {
+  if (variant === 'impact') {
+    return (
+      <div className="rounded-2xl bg-brand-olive-green/90 p-3 lg:p-4 shadow-sm transition-all hover:shadow-md">
+        <div className="mb-2 flex items-center justify-between">
+          <div className="flex h-8 w-8 lg:h-9 lg:w-9 items-center justify-center rounded-lg bg-white/10">
+            {icon}
+          </div>
+          {trend && (
+            <span className="text-xs font-semibold uppercase tracking-wider text-brand-gold">{trend}</span>
+          )}
+        </div>
+        <p className="text-xl lg:text-2xl font-bold tracking-tight text-white">{value}</p>
+        <p className="text-xs lg:text-sm font-semibold uppercase tracking-wider text-brand-gold/80">{label}</p>
+      </div>
+    );
+  }
+
   return (
     <div className="rounded-2xl border border-border bg-white p-3 lg:p-4 shadow-sm transition-all hover:shadow-md lg:border-border/50">
       <div className="mb-2 flex items-center justify-between">

@@ -22,9 +22,9 @@ export default function WelcomePage() {
             <Image
               src="/logo-tagline.svg"
               alt="BrightMeal — Food Rescue & Community Support"
-              width={240}
-              height={240}
-              className="h-44 w-44 lg:h-56 lg:w-56"
+              width={260}
+              height={260}
+              className="h-52 w-52 lg:h-64 lg:w-64"
               priority
             />
           </div>

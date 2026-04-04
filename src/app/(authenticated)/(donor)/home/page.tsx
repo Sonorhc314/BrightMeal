@@ -87,9 +87,8 @@ export default async function DonorHomePage() {
           <StatsCard
             label="CO2e Saved"
             value={formatCO2e(profile.total_kg_impact)}
-            icon={<Cloud className="h-4 w-4" />}
-            trend="impact"
-            accent="green"
+            icon={<Cloud className="h-4 w-4 text-white/70" />}
+            variant="impact"
           />
         </div>
       </div>

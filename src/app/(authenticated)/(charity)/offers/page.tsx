@@ -85,9 +85,8 @@ export default async function OffersPage() {
         <StatsCard
           label="Meals Saved"
           value={formatMeals(profile.total_kg_impact)}
-          icon={<Cloud className="h-4 w-4" />}
-          trend="impact"
-          accent="purple"
+          icon={<Cloud className="h-4 w-4 text-white/70" />}
+          variant="impact"
         />
       </div>
 
