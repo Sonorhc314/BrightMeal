@@ -21,12 +21,14 @@ export interface DonationFormData {
   storage: StorageType;
   allergens: string[];
   packaging: PackagingType;
+  dateType: 'use_by' | 'best_before';
   readyBy: string;
   useBy: string;
   pickupStart: string;
   pickupEnd: string;
   pickupLocation: string;
   notes: string;
+  photoUrl: string;
 }
 
 interface DonationFormProps {
@@ -53,12 +55,14 @@ export function DonationForm({
   const [storage, setStorage] = useState<StorageType>(defaultValues.storage ?? 'ambient');
   const [allergens, setAllergens] = useState<string[]>(defaultValues.allergens ?? []);
   const [packaging, setPackaging] = useState<PackagingType>(defaultValues.packaging ?? 'containers');
+  const [dateType, setDateType] = useState<'use_by' | 'best_before'>(defaultValues.dateType ?? 'use_by');
   const [readyBy, setReadyBy] = useState(defaultValues.readyBy ?? '');
   const [useBy, setUseBy] = useState(defaultValues.useBy ?? '');
   const [pickupStart, setPickupStart] = useState(defaultValues.pickupStart ?? '');
   const [pickupEnd, setPickupEnd] = useState(defaultValues.pickupEnd ?? '');
   const [pickupLocation, setPickupLocation] = useState(defaultValues.pickupLocation ?? '');
   const [notes, setNotes] = useState(defaultValues.notes ?? '');
+  const [photoUrl, setPhotoUrl] = useState(defaultValues.photoUrl ?? '');
 
   const toggleAllergen = (allergen: string) => {
     if (allergen === 'None') {
@@ -77,7 +81,7 @@ export function DonationForm({
     e.preventDefault();
     await onSubmit({
       itemName, category, quantity, unit, storage, allergens,
-      packaging, readyBy, useBy, pickupStart, pickupEnd, pickupLocation, notes,
+      packaging, dateType, readyBy, useBy, pickupStart, pickupEnd, pickupLocation, notes, photoUrl,
     });
   };
 
@@ -251,9 +255,45 @@ export function DonationForm({
         </div>
 
         <div className="space-y-4">
+          <div className="space-y-2">
+            <Label>Date type</Label>
+            <div className="flex gap-3">
+              <label className={`flex cursor-pointer items-center gap-2 rounded-xl border px-3 py-2 text-sm font-medium transition-all ${
+                dateType === 'use_by'
+                  ? 'border-brand-green bg-brand-green-light text-brand-green'
+                  : 'border-border bg-cream/50 text-muted-foreground'
+              }`}>
+                <input
+                  type="radio"
+                  name="dateType"
+                  value="use_by"
+                  checked={dateType === 'use_by'}
+                  onChange={() => setDateType('use_by')}
+                  className="sr-only"
+                />
+                Use by <span className="text-xs font-normal">(safety deadline)</span>
+              </label>
+              <label className={`flex cursor-pointer items-center gap-2 rounded-xl border px-3 py-2 text-sm font-medium transition-all ${
+                dateType === 'best_before'
+                  ? 'border-brand-green bg-brand-green-light text-brand-green'
+                  : 'border-border bg-cream/50 text-muted-foreground'
+              }`}>
+                <input
+                  type="radio"
+                  name="dateType"
+                  value="best_before"
+                  checked={dateType === 'best_before'}
+                  onChange={() => setDateType('best_before')}
+                  className="sr-only"
+                />
+                Best before <span className="text-xs font-normal">(quality date)</span>
+              </label>
+            </div>
+          </div>
+
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-2">
-              <Label htmlFor="readyBy">Ready by</Label>
+              <Label htmlFor="readyBy">Ready from</Label>
               <Input
                 id="readyBy"
                 type="datetime-local"
@@ -264,7 +304,7 @@ export function DonationForm({
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="useBy">Use by</Label>
+              <Label htmlFor="useBy">{dateType === 'use_by' ? 'Use by' : 'Best before'}</Label>
               <Input
                 id="useBy"
                 type="datetime-local"
@@ -278,7 +318,7 @@ export function DonationForm({
 
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-2">
-              <Label htmlFor="pickupStart">Pickup from</Label>
+              <Label htmlFor="pickupStart">Pickup window start</Label>
               <Input
                 id="pickupStart"
                 type="datetime-local"
@@ -289,7 +329,7 @@ export function DonationForm({
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="pickupEnd">Pickup until</Label>
+              <Label htmlFor="pickupEnd">Pickup window end</Label>
               <Input
                 id="pickupEnd"
                 type="datetime-local"
@@ -334,6 +374,17 @@ export function DonationForm({
               onChange={(e) => setNotes(e.target.value)}
               rows={3}
               className="rounded-xl bg-cream/50"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="photoUrl">Photo of items (optional)</Label>
+            <Input
+              id="photoUrl"
+              placeholder="Paste an image URL"
+              value={photoUrl}
+              onChange={(e) => setPhotoUrl(e.target.value)}
+              className="h-11 rounded-xl bg-cream/50"
             />
           </div>
         </div>

@@ -10,6 +10,7 @@ import { StatusTimeline } from '@/components/StatusTimeline';
 import {
   ArrowLeft, MapPin, Clock, Package, AlertTriangle, Box,
   Phone, Loader2, ShieldCheck, Building2, Truck, Heart,
+  Snowflake, Thermometer,
 } from 'lucide-react';
 import { statusConfig, categoryConfig, storageIcon, storageLabel } from '@/lib/donation-config';
 import type { Donation, DonationEvent, DonationStatus, DonationCategory } from '@/lib/types';
@@ -121,6 +122,23 @@ export default function OfferDetailsPage() {
             <div className="flex-1">
               <p className="font-medium text-foreground">{donation.donor.name}</p>
               <p className="text-sm text-muted-foreground">{donation.donor.business_type || 'Food Business'}</p>
+              {donation.donor.food_hygiene_rating != null && (
+                <span className={`mt-1 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-semibold ${
+                  donation.donor.food_hygiene_rating >= 4
+                    ? 'bg-green-100 text-green-700'
+                    : donation.donor.food_hygiene_rating === 3
+                      ? 'bg-amber-100 text-amber-700'
+                      : donation.donor.food_hygiene_rating === 2
+                        ? 'bg-orange-100 text-orange-700'
+                        : 'bg-red-100 text-red-700'
+                }`}>
+                  {donation.donor.food_hygiene_rating === 5 && '\u2605 5 \u2014 Very Good'}
+                  {donation.donor.food_hygiene_rating === 4 && '\u2605 4 \u2014 Good'}
+                  {donation.donor.food_hygiene_rating === 3 && '\u2605 3 \u2014 Generally Satisfactory'}
+                  {donation.donor.food_hygiene_rating === 2 && '\u2605 2 \u2014 Improvement Necessary'}
+                  {donation.donor.food_hygiene_rating === 1 && '\u2605 1 \u2014 Major Improvement Necessary'}
+                </span>
+              )}
             </div>
             {isMyOrder && donation.donor.phone && (
               <a href={`tel:${donation.donor.phone}`} className="flex h-10 w-10 items-center justify-center rounded-full bg-brand-green-light transition-colors hover:bg-brand-green/20">
@@ -166,7 +184,42 @@ export default function OfferDetailsPage() {
             <span className="font-medium">Notes:</span> {donation.additional_notes}
           </p>
         )}
+
+        {donation.photo_url && (
+          <div className="mt-3">
+            <img
+              src={donation.photo_url}
+              alt={donation.item_name}
+              className="w-full max-h-64 object-cover rounded-xl border border-border"
+            />
+          </div>
+        )}
       </div>
+
+      {/* Temperature Warning */}
+      {(donation.storage === 'chilled' || donation.storage === 'frozen') && (
+        <div className={`relative mb-4 flex items-center gap-3 rounded-2xl border p-4 shadow-sm animate-[fadeUp_0.6s_ease-out_0.12s_both] ${
+          donation.storage === 'frozen'
+            ? 'border-blue-200 bg-blue-50'
+            : 'border-cyan-200 bg-cyan-50'
+        }`}>
+          {donation.storage === 'frozen' ? (
+            <Snowflake className="h-5 w-5 shrink-0 text-blue-600" />
+          ) : (
+            <Thermometer className="h-5 w-5 shrink-0 text-cyan-600" />
+          )}
+          <div>
+            <p className={`text-sm font-semibold ${donation.storage === 'frozen' ? 'text-blue-700' : 'text-cyan-700'}`}>
+              {donation.storage === 'frozen' ? 'Frozen Item — Maintain Cold Chain' : 'Chilled Item — Keep Refrigerated'}
+            </p>
+            <p className={`text-xs ${donation.storage === 'frozen' ? 'text-blue-600' : 'text-cyan-600'}`}>
+              {donation.storage === 'frozen'
+                ? 'Use insulated bags. Do not allow items to thaw during transport.'
+                : 'Deliver within the pickup window. Do not leave in a warm vehicle.'}
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* Timing */}
       <div className="relative mb-4 rounded-2xl border border-border bg-white p-4 shadow-sm animate-[fadeUp_0.6s_ease-out_0.15s_both]">
@@ -182,7 +235,7 @@ export default function OfferDetailsPage() {
             <span className="font-medium text-foreground">{new Date(donation.ready_by).toLocaleString('en-GB', { dateStyle: 'medium', timeStyle: 'short' })}</span>
           </div>
           <div className="flex items-center justify-between rounded-lg bg-secondary/50 px-3 py-2">
-            <span className="text-muted-foreground">Use by</span>
+            <span className="text-muted-foreground">{donation.date_type === 'best_before' ? 'Best before' : 'Use by'}</span>
             <span className="font-medium text-foreground">{new Date(donation.use_by).toLocaleString('en-GB', { dateStyle: 'medium', timeStyle: 'short' })}</span>
           </div>
           <div className="flex items-center justify-between rounded-lg bg-secondary/50 px-3 py-2">

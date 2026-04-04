@@ -65,6 +65,21 @@ export const formPackagingTypes: { value: PackagingType; label: string }[] = [
   { value: 'containers', label: 'Containers' },
 ];
 
+// All 14 allergens mandated by UK Food Information Regulations 2014 (Natasha's Law)
 export const allergenOptions = [
-  'Gluten', 'Dairy', 'Nuts', 'Eggs', 'Soy', 'Fish', 'Shellfish', 'Sesame', 'None',
+  'Celery',
+  'Cereals containing gluten',
+  'Crustaceans',
+  'Eggs',
+  'Fish',
+  'Lupin',
+  'Milk',
+  'Molluscs',
+  'Mustard',
+  'Nuts',
+  'Peanuts',
+  'Sesame',
+  'Soybeans',
+  'Sulphur dioxide',
+  'None',
 ];

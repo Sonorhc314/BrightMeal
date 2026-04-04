@@ -10,6 +10,7 @@ import { StatusTimeline } from '@/components/StatusTimeline';
 import {
   ArrowLeft, MapPin, Clock, Package, AlertTriangle, Box,
   Phone, Heart, Truck, Loader2, XCircle, Pencil,
+  Snowflake, Thermometer,
 } from 'lucide-react';
 import { statusConfig, categoryConfig, storageIcon, storageLabel } from '@/lib/donation-config';
 import type { Donation, DonationEvent, DonationStatus, DonationCategory } from '@/lib/types';
@@ -154,6 +155,31 @@ export default function DonationDetailsPage() {
           </p>
         )}
       </div>
+
+      {/* Temperature Warning */}
+      {(donation.storage === 'chilled' || donation.storage === 'frozen') && (
+        <div className={`relative mb-4 flex items-center gap-3 rounded-2xl border p-4 shadow-sm animate-[fadeUp_0.6s_ease-out_0.07s_both] ${
+          donation.storage === 'frozen'
+            ? 'border-blue-200 bg-blue-50'
+            : 'border-cyan-200 bg-cyan-50'
+        }`}>
+          {donation.storage === 'frozen' ? (
+            <Snowflake className="h-5 w-5 shrink-0 text-blue-600" />
+          ) : (
+            <Thermometer className="h-5 w-5 shrink-0 text-cyan-600" />
+          )}
+          <div>
+            <p className={`text-sm font-semibold ${donation.storage === 'frozen' ? 'text-blue-700' : 'text-cyan-700'}`}>
+              {donation.storage === 'frozen' ? 'Frozen Item — Maintain Cold Chain' : 'Chilled Item — Keep Refrigerated'}
+            </p>
+            <p className={`text-xs ${donation.storage === 'frozen' ? 'text-blue-600' : 'text-cyan-600'}`}>
+              {donation.storage === 'frozen'
+                ? 'Use insulated bags. Do not allow items to thaw during transport.'
+                : 'Deliver within the pickup window. Do not leave in a warm vehicle.'}
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* Timing */}
       <div className="relative mb-4 rounded-2xl border border-border bg-white p-4 shadow-sm animate-[fadeUp_0.6s_ease-out_0.1s_both]">

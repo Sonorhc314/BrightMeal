@@ -51,12 +51,14 @@ export default function EditDonationPage() {
         storage: donation.storage,
         allergens: donation.allergens.length > 0 ? donation.allergens : [],
         packaging: donation.packaging,
+        dateType: donation.date_type || 'use_by',
         readyBy: toLocalDatetime(donation.ready_by),
         useBy: toLocalDatetime(donation.use_by),
         pickupStart: toLocalDatetime(donation.pickup_window_start),
         pickupEnd: toLocalDatetime(donation.pickup_window_end),
         pickupLocation: donation.pickup_location,
         notes: donation.additional_notes || '',
+        photoUrl: donation.photo_url || '',
       });
       setLoading(false);
     };
@@ -85,12 +87,14 @@ export default function EditDonationPage() {
         storage: data.storage,
         allergens: data.allergens.filter((a) => a !== 'None'),
         packaging: data.packaging,
+        date_type: data.dateType,
         ready_by: new Date(data.readyBy).toISOString(),
         use_by: new Date(data.useBy).toISOString(),
         pickup_window_start: new Date(data.pickupStart).toISOString(),
         pickup_window_end: new Date(data.pickupEnd).toISOString(),
         pickup_location: data.pickupLocation,
         additional_notes: data.notes || null,
+        photo_url: data.photoUrl || null,
       })
       .eq('id', id)
       .eq('donor_id', user.id)

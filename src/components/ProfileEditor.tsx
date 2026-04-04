@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
-  Phone, MapPin, Building2, Car, CreditCard, Mail, Pencil, Loader2, Check,
+  Phone, MapPin, Building2, Car, CreditCard, Mail, Pencil, Loader2, Check, ShieldCheck,
 } from 'lucide-react';
 import type { Profile, UserRole } from '@/lib/types';
 
@@ -25,6 +25,7 @@ export function ProfileEditor({ profile, role, accentBg, accentText }: ProfileEd
   const [phone, setPhone] = useState(profile.phone || '');
   const [location, setLocation] = useState(profile.location || '');
   const [businessType, setBusinessType] = useState(profile.business_type || '');
+  const [foodHygieneRating, setFoodHygieneRating] = useState(profile.food_hygiene_rating?.toString() || '');
   const [vehicleType, setVehicleType] = useState(profile.vehicle_type || '');
   const [licensePlate, setLicensePlate] = useState(profile.license_plate || '');
 
@@ -37,7 +38,10 @@ export function ProfileEditor({ profile, role, accentBg, accentText }: ProfileEd
       phone: phone || null,
       location: location || null,
     };
-    if (role === 'donor') updates.business_type = businessType || null;
+    if (role === 'donor') {
+      updates.business_type = businessType || null;
+      (updates as Record<string, string | number | null>).food_hygiene_rating = foodHygieneRating ? parseInt(foodHygieneRating) : null;
+    }
     if (role === 'driver') {
       updates.vehicle_type = vehicleType || null;
       updates.license_plate = licensePlate || null;
@@ -56,6 +60,7 @@ export function ProfileEditor({ profile, role, accentBg, accentText }: ProfileEd
     setPhone(profile.phone || '');
     setLocation(profile.location || '');
     setBusinessType(profile.business_type || '');
+    setFoodHygieneRating(profile.food_hygiene_rating?.toString() || '');
     setVehicleType(profile.vehicle_type || '');
     setLicensePlate(profile.license_plate || '');
     setEditing(false);
@@ -120,6 +125,17 @@ export function ProfileEditor({ profile, role, accentBg, accentText }: ProfileEd
               <div>
                 <p className="text-xs text-muted-foreground">Business Type</p>
                 <p className="text-sm font-medium text-foreground">{businessType || 'Not provided'}</p>
+              </div>
+            </div>
+          )}
+          {role === 'donor' && (
+            <div className="flex items-center gap-3">
+              <div className={`flex h-9 w-9 items-center justify-center rounded-lg ${accentBg}`}>
+                <ShieldCheck className={`h-4 w-4 ${accentText}`} />
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground">Food Hygiene Rating</p>
+                <p className="text-sm font-medium text-foreground">{foodHygieneRating ? `${foodHygieneRating} / 5` : 'Not provided'}</p>
               </div>
             </div>
           )}
@@ -202,6 +218,24 @@ export function ProfileEditor({ profile, role, accentBg, accentText }: ProfileEd
               placeholder="e.g. Restaurant, Cafe"
               className="h-10 rounded-xl bg-cream/50"
             />
+          </div>
+        )}
+        {role === 'donor' && (
+          <div className="space-y-2">
+            <Label htmlFor="edit-hygiene">Food Hygiene Rating</Label>
+            <select
+              id="edit-hygiene"
+              value={foodHygieneRating}
+              onChange={(e) => setFoodHygieneRating(e.target.value)}
+              className="h-10 w-full rounded-xl border border-input bg-cream/50 px-3 text-sm"
+            >
+              <option value="">Not provided</option>
+              <option value="5">5 — Very Good</option>
+              <option value="4">4 — Good</option>
+              <option value="3">3 — Generally Satisfactory</option>
+              <option value="2">2 — Improvement Necessary</option>
+              <option value="1">1 — Major Improvement Necessary</option>
+            </select>
           </div>
         )}
         {role === 'driver' && (

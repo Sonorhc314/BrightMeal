@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Clock, MapPin, Package, ArrowRight } from 'lucide-react';
+import { Clock, MapPin, Package, ArrowRight, Thermometer, Snowflake } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { statusConfig, categoryConfig, storageIcon } from '@/lib/donation-config';
 import type { Donation } from '@/lib/types';
@@ -28,11 +28,31 @@ export function DonationCard({ donation, href, showDonor }: DonationCardProps) {
         <div className="absolute inset-0 bg-gradient-to-br from-brand-green/[0.02] to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
 
         <div className="relative">
+          {donation.storage === 'chilled' && (
+            <div className="mb-3 flex items-center gap-2 rounded-xl bg-cyan-50 border border-cyan-200 px-3 py-2">
+              <Thermometer className="h-4 w-4 shrink-0 text-cyan-600" />
+              <p className="text-xs font-medium text-cyan-700">Keep Chilled — deliver within pickup window</p>
+            </div>
+          )}
+          {donation.storage === 'frozen' && (
+            <div className="mb-3 flex items-center gap-2 rounded-xl bg-blue-50 border border-blue-200 px-3 py-2">
+              <Snowflake className="h-4 w-4 shrink-0 text-blue-600" />
+              <p className="text-xs font-medium text-blue-700">Frozen — maintain cold chain during transport</p>
+            </div>
+          )}
+
           <div className="mb-3 flex items-start justify-between">
             <div className="flex-1">
               <h3 className="font-semibold text-foreground">{donation.item_name}</h3>
               {showDonor && donation.donor && (
-                <p className="text-sm text-muted-foreground">{donation.donor.name}</p>
+                <p className="text-sm text-muted-foreground">
+                  {donation.donor.name}
+                  {donation.donor.food_hygiene_rating != null && (
+                    <span className="ml-1.5 inline-flex items-center rounded-full bg-green-100 px-1.5 py-0.5 text-[10px] font-semibold text-green-700">
+                      {'\u2605'} {donation.donor.food_hygiene_rating}
+                    </span>
+                  )}
+                </p>
               )}
             </div>
             <Badge variant="outline" className={`shrink-0 ${status.className}`}>

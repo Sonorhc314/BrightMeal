@@ -24,6 +24,7 @@ function SignupForm() {
   const [businessType, setBusinessType] = useState('');
   const [vehicleType, setVehicleType] = useState('');
   const [licensePlate, setLicensePlate] = useState('');
+  const [foodHygieneRating, setFoodHygieneRating] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -60,6 +61,7 @@ function SignupForm() {
         phone: phone || null,
         location: location || null,
         business_type: role === 'donor' ? businessType || null : null,
+        food_hygiene_rating: role === 'donor' && foodHygieneRating ? parseInt(foodHygieneRating) : null,
         vehicle_type: role === 'driver' ? vehicleType || null : null,
         license_plate: role === 'driver' ? licensePlate || null : null,
       });
@@ -212,6 +214,25 @@ function SignupForm() {
                 onChange={(e) => setBusinessType(e.target.value)}
                 className="h-12 rounded-xl bg-white lg:bg-cream"
               />
+            </div>
+          )}
+
+          {role === 'donor' && (
+            <div className="space-y-2">
+              <Label htmlFor="foodHygieneRating">Food Hygiene Rating (optional)</Label>
+              <select
+                id="foodHygieneRating"
+                value={foodHygieneRating}
+                onChange={(e) => setFoodHygieneRating(e.target.value)}
+                className="h-12 w-full rounded-xl border border-input bg-white px-3 text-sm lg:bg-cream"
+              >
+                <option value="">Select rating...</option>
+                <option value="5">5 — Very Good</option>
+                <option value="4">4 — Good</option>
+                <option value="3">3 — Generally Satisfactory</option>
+                <option value="2">2 — Improvement Necessary</option>
+                <option value="1">1 — Major Improvement Necessary</option>
+              </select>
             </div>
           )}
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
@@ -10,8 +10,23 @@ import { DonationForm, type DonationFormData } from '@/components/DonationForm';
 export default function PostDonationPage() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [donorLocation, setDonorLocation] = useState('');
   const router = useRouter();
   const supabase = createClient();
+
+  // Auto-fill pickup location from donor profile
+  useEffect(() => {
+    (async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('location')
+        .eq('id', user.id)
+        .single();
+      if (profile?.location) setDonorLocation(profile.location);
+    })();
+  }, []);
 
   const handleSubmit = async (data: DonationFormData) => {
     setLoading(true);
@@ -24,6 +39,7 @@ export default function PostDonationPage() {
       return;
     }
 
+    // TODO: pass photo_url and date_type to RPC when updated
     const { error: rpcError } = await supabase.rpc('create_donation', {
       p_item_name: data.itemName,
       p_category: data.category,
@@ -69,6 +85,7 @@ export default function PostDonationPage() {
         submitLabel="Post Donation"
         submitting={loading}
         error={error}
+        defaultValues={{ pickupLocation: donorLocation }}
       />
     </div>
   );

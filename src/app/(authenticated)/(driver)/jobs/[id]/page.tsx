@@ -8,9 +8,9 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { StatusTimeline } from '@/components/StatusTimeline';
 import {
-  ArrowLeft, MapPin, Clock, Package, Box,
+  ArrowLeft, ArrowRight, MapPin, Clock, Package, Box,
   Phone, Loader2, Building2, Heart, CheckCircle2, Truck,
-  Navigation,
+  Navigation, Snowflake, Thermometer, ShieldCheck, AlertTriangle,
 } from 'lucide-react';
 import { driverStatusConfig as statusConfig, categoryConfig, storageIcon, storageLabel } from '@/lib/donation-config';
 import type { Donation, DonationEvent, DonationStatus, DonationCategory } from '@/lib/types';
@@ -25,6 +25,11 @@ export default function JobDetailsPage() {
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
+  const [showReportModal, setShowReportModal] = useState(false);
+  const [reportReason, setReportReason] = useState('');
+  const [reportNotes, setReportNotes] = useState('');
+  const [reportSubmitting, setReportSubmitting] = useState(false);
+  const [reportSubmitted, setReportSubmitted] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -115,6 +120,24 @@ export default function JobDetailsPage() {
 
     router.push('/jobs');
     router.refresh();
+  };
+
+  const handleReport = async () => {
+    if (!reportReason || !donation || !userId) return;
+    setReportSubmitting(true);
+
+    // Create a notification to the donor about the issue
+    await supabase.from('notifications').insert({
+      user_id: donation.donor_id,
+      donation_id: donation.id,
+      type: 'new_offer' as any, // reusing existing type
+      title: 'Issue Reported with Donation',
+      message: `Driver reported: ${reportReason}${reportNotes ? ` — ${reportNotes}` : ''}`,
+    });
+
+    setReportSubmitting(false);
+    setReportSubmitted(true);
+    setShowReportModal(false);
   };
 
   if (loading) {
@@ -237,6 +260,41 @@ export default function JobDetailsPage() {
         </div>
       </div>
 
+      {/* Temperature Warning */}
+      {(donation.storage === 'chilled' || donation.storage === 'frozen') && (
+        <div className={`relative mb-4 flex items-center gap-3 rounded-2xl border p-4 shadow-sm animate-[fadeUp_0.6s_ease-out_0.17s_both] ${
+          donation.storage === 'frozen'
+            ? 'border-blue-200 bg-blue-50'
+            : 'border-cyan-200 bg-cyan-50'
+        }`}>
+          {donation.storage === 'frozen' ? (
+            <Snowflake className="h-5 w-5 shrink-0 text-blue-600" />
+          ) : (
+            <Thermometer className="h-5 w-5 shrink-0 text-cyan-600" />
+          )}
+          <div>
+            <p className={`text-sm font-semibold ${donation.storage === 'frozen' ? 'text-blue-700' : 'text-cyan-700'}`}>
+              {donation.storage === 'frozen' ? 'Frozen Item — Maintain Cold Chain' : 'Chilled Item — Keep Refrigerated'}
+            </p>
+            <p className={`text-xs ${donation.storage === 'frozen' ? 'text-blue-600' : 'text-cyan-600'}`}>
+              {donation.storage === 'frozen'
+                ? 'Use insulated bags. Do not allow items to thaw during transport.'
+                : 'Deliver within the pickup window. Do not leave in a warm vehicle.'}
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* Food Safety Link */}
+      <Link
+        href="/food-safety"
+        className="relative mb-4 flex items-center gap-3 rounded-2xl border border-brand-green/20 bg-brand-green-light p-3 shadow-sm transition-colors hover:bg-brand-green/10 animate-[fadeUp_0.6s_ease-out_0.18s_both]"
+      >
+        <ShieldCheck className="h-5 w-5 text-brand-green" />
+        <span className="text-sm font-medium text-brand-green">View Food Safety Guidelines</span>
+        <ArrowRight className="ml-auto h-4 w-4 text-brand-green/60" />
+      </Link>
+
       {/* Timing */}
       <div className="relative mb-4 rounded-2xl border border-border bg-white p-4 shadow-sm animate-[fadeUp_0.6s_ease-out_0.2s_both]">
         <div className="mb-3 flex items-center gap-2">
@@ -332,6 +390,76 @@ export default function JobDetailsPage() {
           </Button>
         )}
       </div>
+
+      {/* Report Issue */}
+      {isMyJob && donation.status !== 'delivered' && donation.status !== 'cancelled' && (
+        <div className="relative mt-3 animate-[fadeUp_0.6s_ease-out_0.35s_both]">
+          {reportSubmitted ? (
+            <div className="flex items-center gap-2 rounded-xl bg-green-50 border border-green-200 p-3">
+              <CheckCircle2 className="h-5 w-5 text-green-600" />
+              <p className="text-sm font-medium text-green-700">Issue reported successfully</p>
+            </div>
+          ) : (
+            <button
+              onClick={() => setShowReportModal(true)}
+              className="flex w-full items-center justify-center gap-2 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700 transition-colors hover:bg-red-100"
+            >
+              <AlertTriangle className="h-4 w-4" />
+              Report Food Safety Issue
+            </button>
+          )}
+        </div>
+      )}
+
+      {/* Report Modal */}
+      {showReportModal && (
+        <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 sm:items-center" onClick={() => setShowReportModal(false)}>
+          <div className="w-full max-w-md rounded-t-2xl bg-white p-5 shadow-xl sm:rounded-2xl" onClick={(e) => e.stopPropagation()}>
+            <h3 className="mb-1 text-lg font-bold text-foreground">Report an Issue</h3>
+            <p className="mb-4 text-sm text-muted-foreground">Select the reason and add any details.</p>
+
+            <div className="mb-4 space-y-2">
+              {['Food appears damaged', 'Food has expired', 'Wrong items', 'Temperature concern', 'Packaging compromised', 'Other safety concern'].map((reason) => (
+                <button
+                  key={reason}
+                  onClick={() => setReportReason(reason)}
+                  className={`w-full rounded-xl border px-4 py-2.5 text-left text-sm transition-colors ${
+                    reportReason === reason
+                      ? 'border-red-300 bg-red-50 font-medium text-red-700'
+                      : 'border-border bg-white text-foreground hover:bg-secondary'
+                  }`}
+                >
+                  {reason}
+                </button>
+              ))}
+            </div>
+
+            <textarea
+              placeholder="Additional notes (optional)"
+              value={reportNotes}
+              onChange={(e) => setReportNotes(e.target.value)}
+              className="mb-4 w-full rounded-xl border border-border bg-secondary/50 px-4 py-2.5 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-red-200"
+              rows={2}
+            />
+
+            <div className="flex gap-3">
+              <button
+                onClick={() => setShowReportModal(false)}
+                className="flex-1 rounded-xl border border-border px-4 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleReport}
+                disabled={!reportReason || reportSubmitting}
+                className="flex-1 rounded-xl bg-red-600 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-red-700 disabled:opacity-50"
+              >
+                {reportSubmitting ? 'Submitting...' : 'Submit Report'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

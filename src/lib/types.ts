@@ -36,6 +36,7 @@ export interface Profile {
   best_streak: number;
   last_active_week: string;
   total_donations_completed: number;
+  food_hygiene_rating: number | null;
   created_at: string;
 }
 
@@ -64,6 +65,8 @@ export interface Donation {
   pickup_window_end: string;
   pickup_location: string;
   additional_notes: string | null;
+  photo_url: string | null;
+  date_type: 'use_by' | 'best_before';
   status: DonationStatus;
   created_at: string;
   // Joined fields
