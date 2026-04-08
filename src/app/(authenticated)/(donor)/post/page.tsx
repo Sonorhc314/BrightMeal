@@ -39,7 +39,6 @@ export default function PostDonationPage() {
       return;
     }
 
-    // TODO: pass photo_url and date_type to RPC when updated
     const { error: rpcError } = await supabase.rpc('create_donation', {
       p_item_name: data.itemName,
       p_category: data.category,
@@ -54,6 +53,9 @@ export default function PostDonationPage() {
       p_pickup_window_end: new Date(data.pickupEnd).toISOString(),
       p_pickup_location: data.pickupLocation,
       p_additional_notes: data.notes || null,
+      p_photo_url: data.photoUrl || null,
+      p_date_type: data.dateType,
+      p_delivery_method: data.deliveryMethod,
     });
 
     if (rpcError) {

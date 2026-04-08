@@ -9,9 +9,9 @@ import {
   Loader2, Sparkles, Thermometer, Clock, MapPin, AlertTriangle,
 } from 'lucide-react';
 import {
-  formCategories, formUnits, formStorageTypes, formPackagingTypes, allergenOptions,
+  formCategories, formUnits, formStorageTypes, formPackagingTypes, allergenOptions, formDeliveryMethods,
 } from '@/lib/donation-config';
-import type { DonationCategory, DonationUnit, StorageType, PackagingType } from '@/lib/types';
+import type { DonationCategory, DonationUnit, StorageType, PackagingType, DeliveryMethod } from '@/lib/types';
 
 export interface DonationFormData {
   itemName: string;
@@ -29,6 +29,7 @@ export interface DonationFormData {
   pickupLocation: string;
   notes: string;
   photoUrl: string;
+  deliveryMethod: DeliveryMethod;
 }
 
 interface DonationFormProps {
@@ -63,6 +64,7 @@ export function DonationForm({
   const [pickupLocation, setPickupLocation] = useState(defaultValues.pickupLocation ?? '');
   const [notes, setNotes] = useState(defaultValues.notes ?? '');
   const [photoUrl, setPhotoUrl] = useState(defaultValues.photoUrl ?? '');
+  const [deliveryMethod, setDeliveryMethod] = useState<DeliveryMethod>(defaultValues.deliveryMethod ?? 'driver_delivery');
 
   const toggleAllergen = (allergen: string) => {
     if (allergen === 'None') {
@@ -81,7 +83,7 @@ export function DonationForm({
     e.preventDefault();
     await onSubmit({
       itemName, category, quantity, unit, storage, allergens,
-      packaging, dateType, readyBy, useBy, pickupStart, pickupEnd, pickupLocation, notes, photoUrl,
+      packaging, dateType, readyBy, useBy, pickupStart, pickupEnd, pickupLocation, notes, photoUrl, deliveryMethod,
     });
   };
 
@@ -353,6 +355,27 @@ export function DonationForm({
         </div>
 
         <div className="space-y-4">
+          <div className="space-y-2">
+            <Label>Delivery method</Label>
+            <div className="grid grid-cols-2 gap-3">
+              {formDeliveryMethods.map((m) => (
+                <button
+                  key={m.value}
+                  type="button"
+                  onClick={() => setDeliveryMethod(m.value)}
+                  className={`rounded-xl border px-3 py-2.5 text-left transition-all active:scale-[0.96] ${
+                    deliveryMethod === m.value
+                      ? 'border-brand-green bg-brand-green-light text-brand-green'
+                      : 'border-border bg-cream/50 text-muted-foreground'
+                  }`}
+                >
+                  <p className="text-sm font-medium">{m.label}</p>
+                  <p className="text-xs opacity-70">{m.description}</p>
+                </button>
+              ))}
+            </div>
+          </div>
+
           <div className="space-y-2">
             <Label htmlFor="pickupLocation">Pickup location</Label>
             <Input

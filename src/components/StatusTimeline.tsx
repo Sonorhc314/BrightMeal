@@ -1,7 +1,7 @@
 import { Check, Package, HandHeart, Truck, CheckCircle2, XCircle } from 'lucide-react';
-import type { DonationEvent, DonationStatus } from '@/lib/types';
+import type { DonationEvent, DonationStatus, DeliveryMethod } from '@/lib/types';
 
-const statusSteps: { status: DonationStatus; label: string; icon: React.ReactNode }[] = [
+const allStatusSteps: { status: DonationStatus; label: string; icon: React.ReactNode }[] = [
   { status: 'posted', label: 'Posted', icon: <Package className="h-4 w-4" /> },
   { status: 'accepted', label: 'Accepted by Charity', icon: <HandHeart className="h-4 w-4" /> },
   { status: 'driver_assigned', label: 'Driver Assigned', icon: <Truck className="h-4 w-4" /> },
@@ -12,9 +12,14 @@ const statusSteps: { status: DonationStatus; label: string; icon: React.ReactNod
 interface StatusTimelineProps {
   currentStatus: DonationStatus;
   events: DonationEvent[];
+  deliveryMethod?: DeliveryMethod;
 }
 
-export function StatusTimeline({ currentStatus, events }: StatusTimelineProps) {
+export function StatusTimeline({ currentStatus, events, deliveryMethod }: StatusTimelineProps) {
+  const statusSteps = deliveryMethod === 'charity_pickup'
+    ? allStatusSteps.filter((s) => !['driver_assigned', 'picked_up'].includes(s.status))
+    : allStatusSteps;
+
   const isCancelled = currentStatus === 'cancelled';
   const cancelEvent = isCancelled ? events.find((e) => e.status === 'cancelled') : null;
 

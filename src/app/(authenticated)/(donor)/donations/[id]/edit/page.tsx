@@ -59,6 +59,7 @@ export default function EditDonationPage() {
         pickupLocation: donation.pickup_location,
         notes: donation.additional_notes || '',
         photoUrl: donation.photo_url || '',
+        deliveryMethod: donation.delivery_method || 'driver_delivery',
       });
       setLoading(false);
     };
@@ -95,6 +96,7 @@ export default function EditDonationPage() {
         pickup_location: data.pickupLocation,
         additional_notes: data.notes || null,
         photo_url: data.photoUrl || null,
+        delivery_method: data.deliveryMethod,
       })
       .eq('id', id)
       .eq('donor_id', user.id)

@@ -263,6 +263,23 @@ VALUES
    NOW() + INTERVAL '2 hours', NOW() + INTERVAL '4 hours',
    '1 Pierrepont Street, Bath, BA1 1LA', 'Contains parmesan, keep chilled', 'posted', NOW() - INTERVAL '1 minute');
 
+-- 2 CHARITY SELF-COLLECTION (charity_pickup delivery method)
+INSERT INTO donations (donor_id, charity_id, driver_id, item_name, category, quantity, unit, storage, allergens, packaging, ready_by, use_by, date_type, pickup_window_start, pickup_window_end, pickup_location, additional_notes, delivery_method, status, created_at)
+VALUES
+  -- Charity pickup: delivered (Oasis Pantry collected from Bath Buns)
+  ('11111111-1111-1111-1111-111111111111', '77777777-7777-7777-7777-777777777777', NULL,
+   'Focaccia Bread Selection', 'bakery', 5, 'kg', 'ambient', '{"Gluten"}', 'bagged',
+   NOW() - INTERVAL '2 days', NOW() - INTERVAL '1 day', 'best_before',
+   NOW() - INTERVAL '2 days', NOW() - INTERVAL '2 days' + INTERVAL '2 hours',
+   '5 Cheap Street, Bath, BA1 1NE', 'Charity picked up directly', 'charity_pickup', 'delivered', NOW() - INTERVAL '2 days'),
+
+  -- Charity pickup: accepted, waiting for Oasis Pantry to collect
+  ('22222222-2222-2222-2222-222222222222', '77777777-7777-7777-7777-777777777777', NULL,
+   'Veggie Soup Batch', 'cooked_meals', 8, 'kg', 'chilled', '{"Celery"}', 'containers',
+   NOW(), NOW() + INTERVAL '1 day', 'use_by',
+   NOW() + INTERVAL '1 hour', NOW() + INTERVAL '3 hours',
+   '1 Pierrepont Street, Bath, BA1 1LA', 'Charity collecting — ring bell at back entrance', 'charity_pickup', 'accepted', NOW() - INTERVAL '20 minutes');
+
 -- ============================================================
 -- PHASE 6: Re-enable donation triggers
 -- ============================================================
@@ -309,6 +326,19 @@ INSERT INTO donation_events (donation_id, status, actor_id, created_at)
 SELECT d.id, 'posted', d.donor_id, d.created_at
 FROM donations d WHERE d.donor_id IN ('11111111-1111-1111-1111-111111111111','22222222-2222-2222-2222-222222222222','33333333-3333-3333-3333-333333333333','44444444-4444-4444-4444-444444444444')
 AND d.status = 'posted';
+
+-- Charity pickup delivered: posted + accepted + delivered events
+INSERT INTO donation_events (donation_id, status, actor_id, created_at)
+SELECT d.id, 'posted', d.donor_id, d.created_at
+FROM donations d WHERE d.delivery_method = 'charity_pickup' AND d.status IN ('accepted', 'delivered');
+
+INSERT INTO donation_events (donation_id, status, actor_id, created_at)
+SELECT d.id, 'accepted', d.charity_id, d.created_at + INTERVAL '15 minutes'
+FROM donations d WHERE d.delivery_method = 'charity_pickup' AND d.status IN ('accepted', 'delivered');
+
+INSERT INTO donation_events (donation_id, status, actor_id, created_at)
+SELECT d.id, 'delivered', d.charity_id, d.created_at + INTERVAL '1 hour'
+FROM donations d WHERE d.delivery_method = 'charity_pickup' AND d.status = 'delivered';
 
 -- ============================================================
 -- PHASE 8: Insert notifications
@@ -371,13 +401,15 @@ AND d.donor_id IN ('11111111-1111-1111-1111-111111111111','22222222-2222-2222-22
 --   D6: 25 portions -> 10 kg   -> 100 pts
 --
 -- Per user totals:
---   Bath Buns (D1+D4):     20 kg, 200 pts, 2 deliveries
+--   Focaccia charity pickup: 5 kg -> 50 pts (Bath Buns + Oasis Pantry)
+--
+--   Bath Buns (D1+D4+focaccia): 25 kg, 250 pts, 3 deliveries
 --   Green Rocket (D2+D5):  18 kg, 180 pts, 2 deliveries
 --   Noya's (D3):            6 kg,  60 pts, 1 delivery
 --   Third Space (D6):      10 kg, 100 pts, 1 delivery
 --   Julian House (D1+D3+D5): 24 kg, 240 pts, 3 deliveries
 --   Genesis Trust (D2+D6): 18 kg, 180 pts, 2 deliveries
---   Oasis Pantry (D4):     12 kg, 120 pts, 1 delivery
+--   Oasis Pantry (D4+focaccia): 17 kg, 170 pts, 2 deliveries
 --   James (D1+D3+D6):      24 kg, 240 pts, 3 deliveries
 --   Sarah (D2+D5):         18 kg, 180 pts, 2 deliveries
 --   Mike (D4):             12 kg, 120 pts, 1 delivery
@@ -390,8 +422,8 @@ BEGIN
   v_current_week := to_char(NOW(), 'IYYY') || '-W' || to_char(NOW(), 'IW');
 
   -- Donors
-  UPDATE profiles SET total_points = 200, total_kg_impact = 20, total_donations_completed = 2,
-    current_streak = 2, best_streak = 2, last_active_week = v_current_week
+  UPDATE profiles SET total_points = 250, total_kg_impact = 25, total_donations_completed = 3,
+    current_streak = 3, best_streak = 3, last_active_week = v_current_week
   WHERE id = '11111111-1111-1111-1111-111111111111';
 
   UPDATE profiles SET total_points = 180, total_kg_impact = 18, total_donations_completed = 2,
@@ -415,8 +447,8 @@ BEGIN
     current_streak = 2, best_streak = 2, last_active_week = v_current_week
   WHERE id = '66666666-6666-6666-6666-666666666666';
 
-  UPDATE profiles SET total_points = 120, total_kg_impact = 12, total_donations_completed = 1,
-    current_streak = 1, best_streak = 1, last_active_week = v_current_week
+  UPDATE profiles SET total_points = 170, total_kg_impact = 17, total_donations_completed = 2,
+    current_streak = 2, best_streak = 2, last_active_week = v_current_week
   WHERE id = '77777777-7777-7777-7777-777777777777';
 
   -- Drivers
@@ -477,12 +509,13 @@ INSERT INTO user_badges (user_id, badge_id) VALUES
   ('99999999-9999-9999-9999-999999999999', 'points_100'),
   ('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', 'points_100');
 
--- streak_2 (users with current_streak >= 2)
+-- streak_2 (users with current_streak >= 2, including Oasis Pantry now at streak 2)
 INSERT INTO user_badges (user_id, badge_id) VALUES
   ('11111111-1111-1111-1111-111111111111', 'streak_2'),
   ('22222222-2222-2222-2222-222222222222', 'streak_2'),
   ('55555555-5555-5555-5555-555555555555', 'streak_2'),
   ('66666666-6666-6666-6666-666666666666', 'streak_2'),
+  ('77777777-7777-7777-7777-777777777777', 'streak_2'),
   ('88888888-8888-8888-8888-888888888888', 'streak_2'),
   ('99999999-9999-9999-9999-999999999999', 'streak_2');
 

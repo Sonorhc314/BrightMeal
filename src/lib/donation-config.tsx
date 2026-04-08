@@ -1,5 +1,5 @@
-import { Snowflake, Thermometer, Sun } from 'lucide-react';
-import type { DonationStatus, DonationCategory, DonationUnit, StorageType, PackagingType } from '@/lib/types';
+import { Snowflake, Thermometer, Sun, Truck, User } from 'lucide-react';
+import type { DonationStatus, DonationCategory, DonationUnit, StorageType, PackagingType, DeliveryMethod } from '@/lib/types';
 
 export const statusConfig: Record<DonationStatus, { label: string; className: string }> = {
   posted: { label: 'Available', className: 'bg-blue-100 text-blue-700 border-blue-200' },
@@ -63,6 +63,16 @@ export const formPackagingTypes: { value: PackagingType; label: string }[] = [
   { value: 'bagged', label: 'Bagged' },
   { value: 'loose', label: 'Loose' },
   { value: 'containers', label: 'Containers' },
+];
+
+export const deliveryMethodConfig: Record<DeliveryMethod, { label: string; icon: React.ReactNode; className: string }> = {
+  driver_delivery: { label: 'Driver Delivery', icon: <Truck className="h-3.5 w-3.5" />, className: 'bg-blue-100 text-blue-700' },
+  charity_pickup: { label: 'Charity Pickup', icon: <User className="h-3.5 w-3.5" />, className: 'bg-purple-100 text-purple-700' },
+};
+
+export const formDeliveryMethods: { value: DeliveryMethod; label: string; description: string }[] = [
+  { value: 'driver_delivery', label: 'Driver Delivery', description: 'A volunteer driver will collect and deliver' },
+  { value: 'charity_pickup', label: 'Charity Pickup', description: 'The charity will collect it themselves' },
 ];
 
 // All 14 allergens mandated by UK Food Information Regulations 2014 (Natasha's Law)

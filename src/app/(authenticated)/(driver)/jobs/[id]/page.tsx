@@ -323,7 +323,7 @@ export default function JobDetailsPage() {
       {isMyJob && (
         <div className="relative mb-6 rounded-2xl border border-border bg-white p-4 shadow-sm animate-[fadeUp_0.6s_ease-out_0.25s_both]">
           <h3 className="mb-4 font-semibold text-foreground">Timeline</h3>
-          <StatusTimeline currentStatus={donation.status} events={events} />
+          <StatusTimeline currentStatus={donation.status} events={events} deliveryMethod={donation.delivery_method} />
         </div>
       )}
 

@@ -282,6 +282,7 @@ export default function DonationDetailsPage() {
         <StatusTimeline
           currentStatus={donation.status}
           events={events}
+          deliveryMethod={donation.delivery_method}
         />
       </div>
 

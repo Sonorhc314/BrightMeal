@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Clock, MapPin, Package, ArrowRight, Thermometer, Snowflake } from 'lucide-react';
+import { Clock, MapPin, Package, ArrowRight, Thermometer, Snowflake, User } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { statusConfig, categoryConfig, storageIcon } from '@/lib/donation-config';
 import type { Donation } from '@/lib/types';
@@ -71,6 +71,12 @@ export function DonationCard({ donation, href, showDonor }: DonationCardProps) {
             <span className="inline-flex items-center gap-1 rounded-lg bg-secondary px-2 py-1">
               {storageIcon[donation.storage]}
             </span>
+            {donation.delivery_method === 'charity_pickup' && (
+              <span className="inline-flex items-center gap-1 rounded-lg bg-purple-100 px-2 py-1 text-xs font-medium text-purple-700">
+                <User className="h-3 w-3" />
+                Self-collect
+              </span>
+            )}
             {isUrgent && (
               <span className="inline-flex items-center rounded-lg bg-red-100 px-2 py-1 text-xs font-medium text-red-700">
                 Urgent

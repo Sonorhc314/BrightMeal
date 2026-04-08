@@ -10,7 +10,7 @@ import { StatusTimeline } from '@/components/StatusTimeline';
 import {
   ArrowLeft, MapPin, Clock, Package, AlertTriangle, Box,
   Phone, Loader2, ShieldCheck, Building2, Truck, Heart,
-  Snowflake, Thermometer,
+  Snowflake, Thermometer, User,
 } from 'lucide-react';
 import { statusConfig, categoryConfig, storageIcon, storageLabel } from '@/lib/donation-config';
 import type { Donation, DonationEvent, DonationStatus, DonationCategory } from '@/lib/types';
@@ -24,6 +24,7 @@ export default function OfferDetailsPage() {
   const [events, setEvents] = useState<DonationEvent[]>([]);
   const [loading, setLoading] = useState(true);
   const [accepting, setAccepting] = useState(false);
+  const [collecting, setCollecting] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -68,6 +69,24 @@ export default function OfferDetailsPage() {
 
     if (error) {
       setAccepting(false);
+      alert(error.message);
+      return;
+    }
+
+    router.push('/offers');
+    router.refresh();
+  };
+
+  const handleCollect = async () => {
+    if (!userId || !donation) return;
+    setCollecting(true);
+
+    const { error } = await supabase.rpc('mark_charity_collected', {
+      p_donation_id: donation.id,
+    });
+
+    if (error) {
+      setCollecting(false);
       alert(error.message);
       return;
     }
@@ -260,6 +279,17 @@ export default function OfferDetailsPage() {
         <p className="text-sm text-muted-foreground">{donation.pickup_location}</p>
       </div>
 
+      {/* Charity Self-Collection Info */}
+      {donation.delivery_method === 'charity_pickup' && (
+        <div className="relative mb-4 flex items-center gap-3 rounded-2xl border border-purple-200 bg-purple-50 p-4 shadow-sm animate-[fadeUp_0.6s_ease-out_0.22s_both]">
+          <User className="h-5 w-5 shrink-0 text-purple-600" />
+          <div>
+            <p className="text-sm font-semibold text-purple-700">Charity Self-Collection</p>
+            <p className="text-xs text-purple-600">Your organisation will collect this donation directly from the donor.</p>
+          </div>
+        </div>
+      )}
+
       {/* Driver Info */}
       {donation.driver && (
         <div className="relative mb-4 rounded-2xl border border-border bg-white p-4 shadow-sm animate-[fadeUp_0.6s_ease-out_0.25s_both]">
@@ -292,7 +322,7 @@ export default function OfferDetailsPage() {
       {(isMyOrder || donation.status !== 'posted') && (
         <div className="relative mb-6 rounded-2xl border border-border bg-white p-4 shadow-sm animate-[fadeUp_0.6s_ease-out_0.3s_both]">
           <h3 className="mb-4 font-semibold text-foreground">Timeline</h3>
-          <StatusTimeline currentStatus={donation.status} events={events} />
+          <StatusTimeline currentStatus={donation.status} events={events} deliveryMethod={donation.delivery_method} />
         </div>
       )}
 
@@ -323,6 +353,26 @@ export default function OfferDetailsPage() {
               Decline Offer
             </Button>
           </Link>
+        </div>
+      )}
+
+      {/* Self-collection action */}
+      {isMyOrder && donation.delivery_method === 'charity_pickup' && donation.status === 'accepted' && (
+        <div className="relative space-y-3 animate-[fadeUp_0.6s_ease-out_0.35s_both]">
+          <div className="flex items-start gap-2 rounded-xl bg-purple-50 p-3">
+            <ShieldCheck className="mt-0.5 h-5 w-5 shrink-0 text-purple-600" />
+            <p className="text-xs text-muted-foreground">
+              Confirm that your organisation has collected this donation from the donor.
+            </p>
+          </div>
+
+          <Button
+            onClick={handleCollect}
+            disabled={collecting}
+            className="h-14 w-full rounded-xl bg-brand-olive-green text-base font-bold uppercase tracking-wider shadow-md shadow-brand-olive-green/20 hover:bg-brand-olive-green/90 active:scale-[0.98] transition-all"
+          >
+            {collecting ? <Loader2 className="h-5 w-5 animate-spin" /> : 'Mark as Collected'}
+          </Button>
         </div>
       )}
     </div>

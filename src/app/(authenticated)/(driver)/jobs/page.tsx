@@ -27,6 +27,7 @@ export default async function JobsPage() {
       .from('donations')
       .select('*, donor:profiles!donations_donor_id_fkey(*)')
       .eq('status', 'accepted')
+      .eq('delivery_method', 'driver_delivery')
       .is('driver_id', null)
       .order('created_at', { ascending: false }),
     supabase

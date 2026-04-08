@@ -10,6 +10,8 @@ export type PackagingType = 'boxed' | 'bagged' | 'loose' | 'containers';
 
 export type DonationStatus = 'posted' | 'accepted' | 'driver_assigned' | 'picked_up' | 'delivered' | 'cancelled';
 
+export type DeliveryMethod = 'driver_delivery' | 'charity_pickup';
+
 export type NotificationType =
   | 'order_accepted'
   | 'driver_assigned'
@@ -67,6 +69,7 @@ export interface Donation {
   additional_notes: string | null;
   photo_url: string | null;
   date_type: 'use_by' | 'best_before';
+  delivery_method: DeliveryMethod;
   status: DonationStatus;
   created_at: string;
   // Joined fields
