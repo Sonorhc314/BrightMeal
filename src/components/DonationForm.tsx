@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import {
-  Loader2, Sparkles, Thermometer, Clock, MapPin, AlertTriangle,
+  Loader2, Sparkles, Thermometer, Clock, MapPin, AlertTriangle, Moon, Sun,
 } from 'lucide-react';
 import {
   formCategories, formUnits, formStorageTypes, formPackagingTypes, allergenOptions, formDeliveryMethods,
@@ -41,6 +41,30 @@ interface DonationFormProps {
   extraButtons?: React.ReactNode;
 }
 
+function getTodayStr() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
+function getTomorrowStr() {
+  const d = new Date();
+  d.setDate(d.getDate() + 1);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
+function inferAvailability(defaultValues: Partial<DonationFormData>): 'tonight' | 'tomorrow' {
+  if (!defaultValues.pickupEnd) return 'tonight';
+  const end = new Date(defaultValues.pickupEnd);
+  const today = new Date();
+  return end.getDate() !== today.getDate() ? 'tomorrow' : 'tonight';
+}
+
+function inferExpiryDate(defaultValues: Partial<DonationFormData>): string {
+  if (!defaultValues.useBy) return getTodayStr();
+  const d = new Date(defaultValues.useBy);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
 export function DonationForm({
   defaultValues = {},
   onSubmit,
@@ -57,10 +81,8 @@ export function DonationForm({
   const [allergens, setAllergens] = useState<string[]>(defaultValues.allergens ?? []);
   const [packaging, setPackaging] = useState<PackagingType>(defaultValues.packaging ?? 'containers');
   const [dateType, setDateType] = useState<'use_by' | 'best_before'>(defaultValues.dateType ?? 'use_by');
-  const [readyBy, setReadyBy] = useState(defaultValues.readyBy ?? '');
-  const [useBy, setUseBy] = useState(defaultValues.useBy ?? '');
-  const [pickupStart, setPickupStart] = useState(defaultValues.pickupStart ?? '');
-  const [pickupEnd, setPickupEnd] = useState(defaultValues.pickupEnd ?? '');
+  const [availability, setAvailability] = useState<'tonight' | 'tomorrow'>(inferAvailability(defaultValues));
+  const [expiryDate, setExpiryDate] = useState(inferExpiryDate(defaultValues));
   const [pickupLocation, setPickupLocation] = useState(defaultValues.pickupLocation ?? '');
   const [notes, setNotes] = useState(defaultValues.notes ?? '');
   const [photoUrl, setPhotoUrl] = useState(defaultValues.photoUrl ?? '');
@@ -81,6 +103,26 @@ export function DonationForm({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Compute timestamps from simplified inputs
+    const now = new Date();
+    const readyBy = now.toISOString().slice(0, 16); // ready now
+
+    const useByDate = new Date(expiryDate + 'T23:59:00');
+    const useBy = useByDate.toISOString().slice(0, 16);
+
+    const pickupStart = now.toISOString().slice(0, 16); // available now
+
+    let pickupEndDate: Date;
+    if (availability === 'tonight') {
+      // Collect before end of today
+      pickupEndDate = new Date(getTodayStr() + 'T23:59:00');
+    } else {
+      // Collect by tomorrow morning (10:00)
+      pickupEndDate = new Date(getTomorrowStr() + 'T10:00:00');
+    }
+    const pickupEnd = pickupEndDate.toISOString().slice(0, 16);
+
     await onSubmit({
       itemName, category, quantity, unit, storage, allergens,
       packaging, dateType, readyBy, useBy, pickupStart, pickupEnd, pickupLocation, notes, photoUrl, deliveryMethod,
@@ -257,6 +299,44 @@ export function DonationForm({
         </div>
 
         <div className="space-y-4">
+          {/* Availability toggle */}
+          <div className="space-y-2">
+            <Label>When is this available?</Label>
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                type="button"
+                onClick={() => setAvailability('tonight')}
+                className={`rounded-xl border px-3 py-3 text-left transition-all active:scale-[0.96] ${
+                  availability === 'tonight'
+                    ? 'border-amber-400 bg-amber-50 text-amber-700'
+                    : 'border-border bg-cream/50 text-muted-foreground'
+                }`}
+              >
+                <div className="flex items-center gap-2 mb-0.5">
+                  <Moon className="h-4 w-4" />
+                  <span className="text-sm font-semibold">Tonight</span>
+                </div>
+                <p className="text-xs opacity-70">Collect before close</p>
+              </button>
+              <button
+                type="button"
+                onClick={() => setAvailability('tomorrow')}
+                className={`rounded-xl border px-3 py-3 text-left transition-all active:scale-[0.96] ${
+                  availability === 'tomorrow'
+                    ? 'border-amber-400 bg-amber-50 text-amber-700'
+                    : 'border-border bg-cream/50 text-muted-foreground'
+                }`}
+              >
+                <div className="flex items-center gap-2 mb-0.5">
+                  <Sun className="h-4 w-4" />
+                  <span className="text-sm font-semibold">Storable</span>
+                </div>
+                <p className="text-xs opacity-70">Collect by tomorrow morning</p>
+              </button>
+            </div>
+          </div>
+
+          {/* Date type toggle */}
           <div className="space-y-2">
             <Label>Date type</Label>
             <div className="flex gap-3">
@@ -293,53 +373,40 @@ export function DonationForm({
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
-            <div className="space-y-2">
-              <Label htmlFor="readyBy">Ready from</Label>
+          {/* Expiry date with Today shortcut */}
+          <div className="space-y-2">
+            <Label htmlFor="expiryDate">{dateType === 'use_by' ? 'Use by' : 'Best before'}</Label>
+            <div className="flex gap-2">
               <Input
-                id="readyBy"
-                type="datetime-local"
-                value={readyBy}
-                onChange={(e) => setReadyBy(e.target.value)}
+                id="expiryDate"
+                type="date"
+                value={expiryDate}
+                onChange={(e) => setExpiryDate(e.target.value)}
                 required
-                className="h-11 rounded-xl bg-cream/50 text-sm"
+                className="h-11 flex-1 rounded-xl bg-cream/50 text-sm"
               />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="useBy">{dateType === 'use_by' ? 'Use by' : 'Best before'}</Label>
-              <Input
-                id="useBy"
-                type="datetime-local"
-                value={useBy}
-                onChange={(e) => setUseBy(e.target.value)}
-                required
-                className="h-11 rounded-xl bg-cream/50 text-sm"
-              />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-3">
-            <div className="space-y-2">
-              <Label htmlFor="pickupStart">Pickup window start</Label>
-              <Input
-                id="pickupStart"
-                type="datetime-local"
-                value={pickupStart}
-                onChange={(e) => setPickupStart(e.target.value)}
-                required
-                className="h-11 rounded-xl bg-cream/50 text-sm"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="pickupEnd">Pickup window end</Label>
-              <Input
-                id="pickupEnd"
-                type="datetime-local"
-                value={pickupEnd}
-                onChange={(e) => setPickupEnd(e.target.value)}
-                required
-                className="h-11 rounded-xl bg-cream/50 text-sm"
-              />
+              <button
+                type="button"
+                onClick={() => setExpiryDate(getTodayStr())}
+                className={`rounded-xl border px-4 py-2 text-sm font-medium transition-all active:scale-[0.96] ${
+                  expiryDate === getTodayStr()
+                    ? 'border-brand-green bg-brand-green-light text-brand-green'
+                    : 'border-border bg-cream/50 text-muted-foreground hover:border-brand-green/50'
+                }`}
+              >
+                Today
+              </button>
+              <button
+                type="button"
+                onClick={() => setExpiryDate(getTomorrowStr())}
+                className={`rounded-xl border px-4 py-2 text-sm font-medium transition-all active:scale-[0.96] ${
+                  expiryDate === getTomorrowStr()
+                    ? 'border-brand-green bg-brand-green-light text-brand-green'
+                    : 'border-border bg-cream/50 text-muted-foreground hover:border-brand-green/50'
+                }`}
+              >
+                Tomorrow
+              </button>
             </div>
           </div>
         </div>

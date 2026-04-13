@@ -305,11 +305,9 @@ export default function JobDetailsPage() {
         </div>
         <div className="space-y-2.5 text-sm">
           <div className="flex items-center justify-between rounded-lg bg-secondary/50 px-3 py-2">
-            <span className="text-muted-foreground">Pickup window</span>
+            <span className="text-muted-foreground">Collect before</span>
             <span className="font-medium text-foreground">
-              {new Date(donation.pickup_window_start).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}
-              {' - '}
-              {new Date(donation.pickup_window_end).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}
+              {new Date(donation.pickup_window_end).toLocaleString('en-GB', { dateStyle: 'medium', timeStyle: 'short' })}
             </span>
           </div>
           <div className="flex items-center gap-2 rounded-lg bg-secondary/50 px-3 py-2">
