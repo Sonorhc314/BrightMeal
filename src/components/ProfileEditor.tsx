@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -18,6 +19,7 @@ interface ProfileEditorProps {
 }
 
 export function ProfileEditor({ profile, role, accentBg, accentText }: ProfileEditorProps) {
+  const router = useRouter();
   const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -52,6 +54,7 @@ export function ProfileEditor({ profile, role, accentBg, accentText }: ProfileEd
     if (error) return;
     setSaved(true);
     setEditing(false);
+    router.refresh();
     setTimeout(() => setSaved(false), 2000);
   };
 

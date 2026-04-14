@@ -87,6 +87,12 @@ export function LeaderboardEntry({
           <p className="text-xs font-medium text-muted-foreground">{formatCO2e(totalKg)}</p>
           <p className="text-[10px] text-muted-foreground">CO2e</p>
         </div>
+        {badgeCount > 0 && (
+          <div className="hidden sm:block">
+            <p className="text-xs font-medium text-muted-foreground">{badgeCount}</p>
+            <p className="text-[10px] text-muted-foreground">badges</p>
+          </div>
+        )}
       </div>
     </div>
   );

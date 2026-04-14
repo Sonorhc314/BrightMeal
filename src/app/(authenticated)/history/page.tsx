@@ -2,7 +2,7 @@ import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 import { Clock, CheckCircle2, Cloud } from 'lucide-react';
 import { SearchFilter } from '@/components/SearchFilter';
-import { formatCO2e } from '@/lib/gamification-config';
+import { formatCO2e, formatMeals } from '@/lib/gamification-config';
 import type { Donation, UserRole } from '@/lib/types';
 
 export default async function HistoryPage() {
@@ -72,8 +72,8 @@ export default async function HistoryPage() {
                 <Cloud className="h-4 w-4 lg:h-5 lg:w-5 text-brand-green" />
               </div>
               <div>
-                <p className="text-lg lg:text-xl font-bold text-foreground">{formatCO2e(profile.total_kg_impact)}</p>
-                <p className="text-xs lg:text-sm text-muted-foreground">CO2e saved</p>
+                <p className="text-lg lg:text-xl font-bold text-foreground">{role === 'charity' ? formatMeals(profile.total_kg_impact) : formatCO2e(profile.total_kg_impact)}</p>
+                <p className="text-xs lg:text-sm text-muted-foreground">{role === 'charity' ? 'Meals saved' : 'CO2e saved'}</p>
               </div>
             </div>
           </div>
