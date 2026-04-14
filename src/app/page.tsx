@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Heart, Truck, Building2, ArrowRight, Leaf, Users } from "lucide-react";
+import { Heart, Truck, Building2, ArrowRight, Leaf, Users, ShieldCheck, BookOpen } from "lucide-react";
 
 export default function WelcomePage() {
   return (
@@ -132,6 +132,51 @@ export default function WelcomePage() {
               </Link>
             </p>
           </div>
+        </div>
+      </div>
+
+      {/* How It Works section */}
+      <div className="relative z-10 mx-auto max-w-4xl px-7 pb-16">
+        <h2 className="mb-8 text-center text-lg font-semibold text-brand-olive animate-[fadeUp_0.6s_ease-out_both]">
+          How It Works
+        </h2>
+
+        <div className="grid gap-4 sm:grid-cols-3">
+          <div className="rounded-2xl border border-border/60 bg-white p-5 text-center shadow-sm animate-[fadeUp_0.6s_ease-out_0.1s_both]">
+            <div className="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-brand-green/[0.08]">
+              <Building2 className="h-5 w-5 text-brand-green" />
+            </div>
+            <p className="text-sm font-medium text-foreground">Donors post surplus</p>
+            <p className="mt-1 text-xs leading-relaxed text-warm-gray">Restaurants and cafes list leftover food with allergen info, storage type, and pickup details.</p>
+          </div>
+
+          <div className="rounded-2xl border border-border/60 bg-white p-5 text-center shadow-sm animate-[fadeUp_0.6s_ease-out_0.2s_both]">
+            <div className="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-brand-purple/[0.08]">
+              <Heart className="h-5 w-5 text-brand-purple" />
+            </div>
+            <p className="text-sm font-medium text-foreground">Charities accept</p>
+            <p className="mt-1 text-xs leading-relaxed text-warm-gray">Verified charities browse available offers and choose what their community needs most.</p>
+          </div>
+
+          <div className="rounded-2xl border border-border/60 bg-white p-5 text-center shadow-sm animate-[fadeUp_0.6s_ease-out_0.3s_both]">
+            <div className="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-brand-blue/[0.08]">
+              <Truck className="h-5 w-5 text-brand-blue" />
+            </div>
+            <p className="text-sm font-medium text-foreground">Drivers deliver</p>
+            <p className="mt-1 text-xs leading-relaxed text-warm-gray">Volunteer drivers pick up donations and deliver them to charities, or charities collect directly.</p>
+          </div>
+        </div>
+
+        {/* Info links */}
+        <div className="mt-8 flex flex-wrap items-center justify-center gap-4 animate-[fadeUp_0.6s_ease-out_0.4s_both]">
+          <Link href="/food-safety" className="group flex items-center gap-2 rounded-xl border border-border/60 bg-white px-4 py-2.5 shadow-sm transition-all hover:shadow-md hover:border-brand-green/30">
+            <ShieldCheck className="h-4 w-4 text-brand-olive" />
+            <span className="text-sm font-medium text-foreground">Food Safety Guidelines</span>
+          </Link>
+          <Link href="/onboarding" className="group flex items-center gap-2 rounded-xl border border-border/60 bg-white px-4 py-2.5 shadow-sm transition-all hover:shadow-md hover:border-brand-blue/30">
+            <BookOpen className="h-4 w-4 text-brand-blue" />
+            <span className="text-sm font-medium text-foreground">Driver Onboarding</span>
+          </Link>
         </div>
       </div>
     </div>
