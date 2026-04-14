@@ -34,6 +34,7 @@ export default async function OffersPage() {
       .select('*, donor:profiles!donations_donor_id_fkey(*)')
       .eq('charity_id', user.id)
       .neq('status', 'delivered')
+      .neq('status', 'cancelled')
       .order('created_at', { ascending: false }),
     supabase
       .from('donations')

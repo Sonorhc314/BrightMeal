@@ -107,6 +107,7 @@ export default async function JobsPage() {
                 donation={donation}
                 href={`/jobs/${donation.id}`}
                 showDonor
+                useDriverLabels
               />
             ))}
           </div>
@@ -127,6 +128,7 @@ export default async function JobsPage() {
           donations={(availableJobs || []) as Donation[]}
           hrefPrefix="/jobs"
           showDonor
+          useDriverLabels
           emptyMessage="No available jobs"
           emptyIcon={<MapPin className="mx-auto mb-3 h-10 w-10 text-muted-foreground/40" />}
         />

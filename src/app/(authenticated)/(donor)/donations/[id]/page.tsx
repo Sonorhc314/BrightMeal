@@ -10,7 +10,7 @@ import { StatusTimeline } from '@/components/StatusTimeline';
 import {
   ArrowLeft, MapPin, Clock, Package, AlertTriangle, Box,
   Phone, Heart, Truck, Loader2, XCircle, Pencil,
-  Snowflake, Thermometer,
+  Snowflake, Thermometer, User,
 } from 'lucide-react';
 import { statusConfig, categoryConfig, storageIcon, storageLabel } from '@/lib/donation-config';
 import type { Donation, DonationEvent, DonationStatus, DonationCategory } from '@/lib/types';
@@ -69,6 +69,7 @@ export default function DonationDetailsPage() {
 
     if (error) {
       setCancelLoading(false);
+      alert(error.message);
       return;
     }
 
@@ -154,7 +155,28 @@ export default function DonationDetailsPage() {
             <span className="font-medium">Notes:</span> {donation.additional_notes}
           </p>
         )}
+
+        {donation.photo_url && (
+          <div className="mt-3">
+            <img
+              src={donation.photo_url}
+              alt={donation.item_name}
+              className="w-full max-h-64 object-cover rounded-xl border border-border"
+            />
+          </div>
+        )}
       </div>
+
+      {/* Charity Self-Collection Info */}
+      {donation.delivery_method === 'charity_pickup' && (
+        <div className="relative mb-4 flex items-center gap-3 rounded-2xl border border-purple-200 bg-purple-50 p-4 shadow-sm animate-[fadeUp_0.6s_ease-out_0.08s_both]">
+          <User className="h-5 w-5 shrink-0 text-purple-600" />
+          <div>
+            <p className="text-sm font-semibold text-purple-700">Charity Self-Collection</p>
+            <p className="text-xs text-purple-600">The charity will collect this donation directly.</p>
+          </div>
+        </div>
+      )}
 
       {/* Temperature Warning */}
       {(donation.storage === 'chilled' || donation.storage === 'frozen') && (

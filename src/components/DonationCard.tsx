@@ -1,17 +1,19 @@
 import Link from 'next/link';
 import { Clock, MapPin, Package, ArrowRight, Thermometer, Snowflake, User } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
-import { statusConfig, categoryConfig, storageIcon } from '@/lib/donation-config';
+import { statusConfig, driverStatusConfig, categoryConfig, storageIcon } from '@/lib/donation-config';
 import type { Donation } from '@/lib/types';
 
 interface DonationCardProps {
   donation: Donation;
   href: string;
   showDonor?: boolean;
+  useDriverLabels?: boolean;
 }
 
-export function DonationCard({ donation, href, showDonor }: DonationCardProps) {
-  const status = statusConfig[donation.status];
+export function DonationCard({ donation, href, showDonor, useDriverLabels }: DonationCardProps) {
+  const statusCfg = useDriverLabels ? driverStatusConfig : statusConfig;
+  const status = statusCfg[donation.status];
   const category = categoryConfig[donation.category] || categoryConfig.other;
   const pickupTime = new Date(donation.pickup_window_start);
   const timeStr = pickupTime.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
@@ -48,7 +50,11 @@ export function DonationCard({ donation, href, showDonor }: DonationCardProps) {
                 <p className="text-sm text-muted-foreground">
                   {donation.donor.name}
                   {donation.donor.food_hygiene_rating != null && (
-                    <span className="ml-1.5 inline-flex items-center rounded-full bg-green-100 px-1.5 py-0.5 text-[10px] font-semibold text-green-700">
+                    <span className={`ml-1.5 inline-flex items-center rounded-full px-1.5 py-0.5 text-[10px] font-semibold ${
+                      donation.donor.food_hygiene_rating >= 4 ? 'bg-green-100 text-green-700' :
+                      donation.donor.food_hygiene_rating === 3 ? 'bg-amber-100 text-amber-700' :
+                      'bg-red-100 text-red-700'
+                    }`}>
                       {'\u2605'} {donation.donor.food_hygiene_rating}
                     </span>
                   )}

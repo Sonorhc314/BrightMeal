@@ -20,10 +20,16 @@ const iconConfig: Record<NotificationType, { icon: React.ReactNode; bg: string }
 };
 
 // Notification types targeted at each role
-const charityTypes: NotificationType[] = ['new_offer'];
-const driverTypes: NotificationType[] = ['new_job', 'pickup_reminder'];
+const charityTypes: NotificationType[] = ['new_offer', 'delivery_complete'];
+const driverTypes: NotificationType[] = ['new_job', 'pickup_reminder', 'driver_en_route'];
 
 function getDonationHref(donationId: string, type: NotificationType): string {
+  // delivery_complete and driver_assigned are sent to multiple roles
+  // but the link needs to go to the right page for whoever receives it
+  // Since we can't know the user's role here, we use the notification type as a heuristic:
+  // - Types only charities receive → /offers/
+  // - Types only drivers receive → /jobs/
+  // - Everything else (donor notifications) → /donations/
   if (charityTypes.includes(type)) return `/offers/${donationId}`;
   if (driverTypes.includes(type)) return `/jobs/${donationId}`;
   return `/donations/${donationId}`;

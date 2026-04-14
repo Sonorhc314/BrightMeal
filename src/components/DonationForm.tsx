@@ -105,13 +105,14 @@ export function DonationForm({
     e.preventDefault();
 
     // Compute timestamps from simplified inputs
+    // On edit, preserve existing readyBy/pickupStart if they were loaded
     const now = new Date();
-    const readyBy = now.toISOString().slice(0, 16); // ready now
+    const readyBy = defaultValues.readyBy || now.toISOString().slice(0, 16);
 
     const useByDate = new Date(expiryDate + 'T23:59:00');
     const useBy = useByDate.toISOString().slice(0, 16);
 
-    const pickupStart = now.toISOString().slice(0, 16); // available now
+    const pickupStart = defaultValues.pickupStart || now.toISOString().slice(0, 16);
 
     let pickupEndDate: Date;
     if (availability === 'tonight') {

@@ -63,8 +63,8 @@ export default async function LeaderboardPage() {
   const currentRank = rankIndex >= 0 ? rankIndex + 1 : (roleList || []).length + 1;
 
   // Platform-wide stats
-  const totalKg = [...(donors || []), ...(charities || []), ...(drivers || [])]
-    .reduce((sum, u) => sum + Number(u.total_kg_impact), 0) / 3;
+  // Sum from donors only to avoid double/triple counting (same kg credited to donor, charity, and driver)
+  const totalKg = (donors || []).reduce((sum, u) => sum + Number(u.total_kg_impact), 0);
 
   return (
     <div className="relative mx-auto max-w-5xl px-5 pt-6 pb-6 overflow-hidden lg:px-8 lg:pt-10 lg:pb-10">

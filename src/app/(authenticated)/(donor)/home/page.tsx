@@ -38,6 +38,7 @@ export default async function DonorHomePage() {
       .select('*, donor:profiles!donations_donor_id_fkey(*)')
       .eq('donor_id', user.id)
       .neq('status', 'delivered')
+      .neq('status', 'cancelled')
       .order('created_at', { ascending: false }),
     supabase
       .from('donations')

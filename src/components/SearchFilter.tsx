@@ -19,6 +19,7 @@ interface SearchFilterProps {
   donations: Donation[];
   hrefPrefix: string;
   showDonor?: boolean;
+  useDriverLabels?: boolean;
   emptyMessage?: string;
   emptyIcon?: React.ReactNode;
   gridClassName?: string;
@@ -28,6 +29,7 @@ export function SearchFilter({
   donations,
   hrefPrefix,
   showDonor,
+  useDriverLabels,
   emptyMessage = 'No donations found',
   emptyIcon,
   gridClassName = 'grid gap-3 lg:grid-cols-2 lg:gap-4',
@@ -82,6 +84,7 @@ export function SearchFilter({
               donation={donation}
               href={`${hrefPrefix}/${donation.id}`}
               showDonor={showDonor}
+              useDriverLabels={useDriverLabels}
             />
           ))}
         </div>

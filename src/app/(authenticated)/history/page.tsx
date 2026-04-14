@@ -38,7 +38,7 @@ export default async function HistoryPage() {
 
   const { data: deliveredDonations } = await query;
 
-  const title = role === 'charity' ? 'Order History' : 'Delivery History';
+  const title = role === 'donor' ? 'Donation History' : role === 'charity' ? 'Order History' : 'Delivery History';
   const emptyMessage = role === 'donor'
     ? 'Your completed donations will appear here'
     : role === 'charity'
