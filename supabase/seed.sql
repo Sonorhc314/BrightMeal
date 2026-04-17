@@ -210,16 +210,16 @@ VALUES
    '5 Cheap Street, Bath, BA1 1NE', 'Freshly baked this morning', 'driver_assigned', NOW() - INTERVAL '2 hours'),
 
   ('44444444-4444-4444-4444-444444444444', '77777777-7777-7777-7777-777777777777', '99999999-9999-9999-9999-999999999999',
-   'Fruit & Yoghurt Pots', 'dairy', 15, 'pieces', 'chilled', '{"Dairy"}', 'containers',
+   'Fruit & Yoghurt Pots', 'dairy', 15, 'pieces', 'chilled', '{"Dairy","Gluten","Nuts"}', 'containers',
    NOW(), NOW() + INTERVAL '2 days', 'best_before',
    NOW() + INTERVAL '1 hour', NOW() + INTERVAL '3 hours',
-   '7 Edgar Buildings, Bath, BA1 2EE', 'Granola topping on the side', 'driver_assigned', NOW() - INTERVAL '1 hour');
+   '7 Edgar Buildings, Bath, BA1 2EE', 'Granola topping on the side (contains oats and nuts)', 'driver_assigned', NOW() - INTERVAL '1 hour');
 
 -- 2 ACCEPTED (waiting for driver — shows available jobs)
 INSERT INTO donations (donor_id, charity_id, driver_id, item_name, category, quantity, unit, storage, allergens, packaging, ready_by, use_by, date_type, pickup_window_start, pickup_window_end, pickup_location, additional_notes, status, created_at)
 VALUES
   ('11111111-1111-1111-1111-111111111111', '66666666-6666-6666-6666-666666666666', NULL,
-   'Cheese Scones', 'bakery', 30, 'pieces', 'ambient', '{"Gluten","Dairy"}', 'bagged',
+   'Cheese Scones', 'bakery', 30, 'pieces', 'ambient', '{"Gluten","Dairy","Eggs"}', 'bagged',
    NOW() + INTERVAL '1 hour', NOW() + INTERVAL '2 days', 'best_before',
    NOW() + INTERVAL '2 hours', NOW() + INTERVAL '4 hours',
    '5 Cheap Street, Bath, BA1 1NE', 'Cheddar and herb, still warm', 'accepted', NOW() - INTERVAL '30 minutes'),
@@ -246,16 +246,16 @@ VALUES
    '1 Pierrepont Street, Bath, BA1 1LA', 'Peppers, courgette, aubergine — vegan', 'posted', NOW() - INTERVAL '5 minutes'),
 
   ('33333333-3333-3333-3333-333333333333', NULL, NULL,
-   'Frozen Chicken Skewers', 'cooked_meals', 5, 'kg', 'frozen', '{}', 'boxed',
+   'Frozen Chicken Skewers', 'cooked_meals', 5, 'kg', 'frozen', '{"Gluten","Soybeans"}', 'boxed',
    NOW(), NOW() + INTERVAL '30 days', 'best_before',
    NOW() + INTERVAL '2 hours', NOW() + INTERVAL '5 hours',
-   '1 Barton Street, Bath, BA1 1HQ', 'Pre-cooked, keep frozen, reheat thoroughly', 'posted', NOW() - INTERVAL '15 minutes'),
+   '1 Barton Street, Bath, BA1 1HQ', 'Pre-cooked with soy marinade coating, keep frozen, reheat thoroughly', 'posted', NOW() - INTERVAL '15 minutes'),
 
   ('44444444-4444-4444-4444-444444444444', NULL, NULL,
-   'Milk & Oat Milk Cartons', 'dairy', 12, 'pieces', 'chilled', '{"Dairy"}', 'boxed',
+   'Milk & Oat Milk Cartons', 'dairy', 12, 'pieces', 'chilled', '{"Dairy","Gluten"}', 'boxed',
    NOW() + INTERVAL '1 hour', NOW() + INTERVAL '3 days', 'best_before',
    NOW() + INTERVAL '2 hours', NOW() + INTERVAL '4 hours',
-   '7 Edgar Buildings, Bath, BA1 2EE', 'Mix of dairy and oat milk, 1L cartons', 'posted', NOW() - INTERVAL '2 minutes'),
+   '7 Edgar Buildings, Bath, BA1 2EE', 'Mix of dairy milk and oat milk (oats contain gluten), 1L cartons', 'posted', NOW() - INTERVAL '2 minutes'),
 
   ('22222222-2222-2222-2222-222222222222', NULL, NULL,
    'Mushroom Risotto', 'cooked_meals', 10, 'portions', 'chilled', '{"Dairy"}', 'containers',
