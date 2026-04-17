@@ -23,11 +23,13 @@ export default async function OffersPage() {
   if (!profile || profile.role !== 'charity') redirect('/login');
 
   // Fetch all data in parallel
+  const nowIso = new Date().toISOString();
   const [{ data: availableOffers }, { data: activeOrders }, { count: totalAccepted }, { count: deliveredCount }] = await Promise.all([
     supabase
       .from('donations')
       .select('*, donor:profiles!donations_donor_id_fkey(*)')
       .eq('status', 'posted')
+      .gte('pickup_end', nowIso)
       .order('created_at', { ascending: false }),
     supabase
       .from('donations')
