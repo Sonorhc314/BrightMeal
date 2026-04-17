@@ -50,12 +50,15 @@ export function DonationCard({ donation, href, showDonor, useDriverLabels }: Don
                 <p className="text-sm text-muted-foreground">
                   {donation.donor.name}
                   {donation.donor.food_hygiene_rating != null && (
-                    <span className={`ml-1.5 inline-flex items-center rounded-full px-1.5 py-0.5 text-[10px] font-semibold ${
-                      donation.donor.food_hygiene_rating >= 4 ? 'bg-green-100 text-green-700' :
-                      donation.donor.food_hygiene_rating === 3 ? 'bg-amber-100 text-amber-700' :
-                      'bg-red-100 text-red-700'
-                    }`}>
-                      {'\u2605'} {donation.donor.food_hygiene_rating}
+                    <span
+                      title="FSA Food Hygiene Rating"
+                      className={`ml-1.5 inline-flex items-center gap-0.5 rounded-full px-1.5 py-0.5 text-[10px] font-semibold ${
+                        donation.donor.food_hygiene_rating >= 4 ? 'bg-green-100 text-green-700' :
+                        donation.donor.food_hygiene_rating === 3 ? 'bg-amber-100 text-amber-700' :
+                        'bg-red-100 text-red-700'
+                      }`}
+                    >
+                      FSA {'\u2605'}{donation.donor.food_hygiene_rating}/5
                     </span>
                   )}
                 </p>

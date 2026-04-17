@@ -12,7 +12,7 @@ import {
   Phone, Loader2, ShieldCheck, Building2, Truck, Heart,
   Snowflake, Thermometer, User,
 } from 'lucide-react';
-import { statusConfig, categoryConfig, storageIcon, storageLabel } from '@/lib/donation-config';
+import { statusConfig, categoryConfig, storageIcon, storageLabel, packagingLabel } from '@/lib/donation-config';
 import type { Donation, DonationEvent, DonationStatus, DonationCategory } from '@/lib/types';
 
 export default function OfferDetailsPage() {
@@ -142,21 +142,27 @@ export default function OfferDetailsPage() {
               <p className="font-medium text-foreground">{donation.donor.name}</p>
               <p className="text-sm text-muted-foreground">{donation.donor.business_type || 'Food Business'}</p>
               {donation.donor.food_hygiene_rating != null && (
-                <span className={`mt-1 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-semibold ${
-                  donation.donor.food_hygiene_rating >= 4
-                    ? 'bg-green-100 text-green-700'
-                    : donation.donor.food_hygiene_rating === 3
-                      ? 'bg-amber-100 text-amber-700'
-                      : donation.donor.food_hygiene_rating === 2
-                        ? 'bg-orange-100 text-orange-700'
-                        : 'bg-red-100 text-red-700'
-                }`}>
-                  {donation.donor.food_hygiene_rating === 5 && '\u2605 5 \u2014 Very Good'}
-                  {donation.donor.food_hygiene_rating === 4 && '\u2605 4 \u2014 Good'}
-                  {donation.donor.food_hygiene_rating === 3 && '\u2605 3 \u2014 Generally Satisfactory'}
-                  {donation.donor.food_hygiene_rating === 2 && '\u2605 2 \u2014 Improvement Necessary'}
-                  {donation.donor.food_hygiene_rating === 1 && '\u2605 1 \u2014 Major Improvement Necessary'}
-                </span>
+                <div className="mt-1">
+                  <p className="text-[10px] uppercase tracking-wider text-muted-foreground/80">FSA Food Hygiene Rating</p>
+                  <span className={`mt-0.5 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-semibold ${
+                    donation.donor.food_hygiene_rating >= 4
+                      ? 'bg-green-100 text-green-700'
+                      : donation.donor.food_hygiene_rating === 3
+                        ? 'bg-amber-100 text-amber-700'
+                        : donation.donor.food_hygiene_rating === 2
+                          ? 'bg-orange-100 text-orange-700'
+                          : 'bg-red-100 text-red-700'
+                  }`}>
+                    {donation.donor.food_hygiene_rating === 5 && '\u2605 5 \u2014 Very Good'}
+                    {donation.donor.food_hygiene_rating === 4 && '\u2605 4 \u2014 Good'}
+                    {donation.donor.food_hygiene_rating === 3 && '\u2605 3 \u2014 Generally Satisfactory'}
+                    {donation.donor.food_hygiene_rating === 2 && '\u2605 2 \u2014 Improvement Necessary'}
+                    {donation.donor.food_hygiene_rating === 1 && '\u2605 1 \u2014 Major Improvement Necessary'}
+                  </span>
+                </div>
+              )}
+              {isMyOrder && donation.donor.phone && (
+                <p className="mt-1 text-xs text-muted-foreground">{donation.donor.phone}</p>
               )}
             </div>
             {isMyOrder && donation.donor.phone && (
@@ -185,7 +191,7 @@ export default function OfferDetailsPage() {
           </span>
           <span className="inline-flex items-center gap-1 rounded-lg bg-secondary px-2.5 py-1 text-xs font-medium">
             <Box className="h-3 w-3" />
-            {donation.packaging}
+            {packagingLabel[donation.packaging]}
           </span>
         </div>
 
@@ -306,6 +312,9 @@ export default function OfferDetailsPage() {
               {donation.driver.vehicle_type && (
                 <p className="text-sm text-muted-foreground">{donation.driver.vehicle_type}</p>
               )}
+              {isMyOrder && donation.driver.phone && (
+                <p className="mt-1 text-xs text-muted-foreground">{donation.driver.phone}</p>
+              )}
             </div>
             {isMyOrder && donation.driver.phone && (
               <a href={`tel:${donation.driver.phone}`} className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 transition-colors hover:bg-blue-200">
@@ -348,7 +357,8 @@ export default function OfferDetailsPage() {
               variant="outline"
               className="h-14 w-full rounded-xl border-2 border-brand-olive-green/30 bg-cream text-base font-bold uppercase tracking-wider text-brand-olive active:scale-[0.98] transition-all hover:bg-brand-olive-green/5"
             >
-              Decline Offer
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Back to Offers
             </Button>
           </Link>
         </div>

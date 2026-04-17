@@ -36,6 +36,13 @@ export const storageLabel: Record<StorageType, string> = {
   ambient: 'Ambient',
 };
 
+export const packagingLabel: Record<PackagingType, string> = {
+  boxed: 'Takeaway boxes',
+  bagged: 'Bagged',
+  loose: 'Loose',
+  containers: 'Trays',
+};
+
 // Form-specific constants shared between post and edit pages
 export const formCategories: { value: DonationCategory; label: string; color: string }[] = [
   { value: 'cooked_meals', label: 'Cooked Meals', color: 'border-orange-400 bg-orange-50 text-orange-700' },
@@ -59,10 +66,10 @@ export const formStorageTypes: { value: StorageType; label: string; icon: React.
 ];
 
 export const formPackagingTypes: { value: PackagingType; label: string }[] = [
-  { value: 'boxed', label: 'Boxed' },
+  { value: 'boxed', label: 'Takeaway boxes' },
   { value: 'bagged', label: 'Bagged' },
   { value: 'loose', label: 'Loose' },
-  { value: 'containers', label: 'Containers' },
+  { value: 'containers', label: 'Trays' },
 ];
 
 export const deliveryMethodConfig: Record<DeliveryMethod, { label: string; icon: React.ReactNode; className: string }> = {

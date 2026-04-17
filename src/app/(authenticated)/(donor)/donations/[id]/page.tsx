@@ -12,7 +12,7 @@ import {
   Phone, Heart, Truck, Loader2, XCircle, Pencil,
   Snowflake, Thermometer, User,
 } from 'lucide-react';
-import { statusConfig, categoryConfig, storageIcon, storageLabel } from '@/lib/donation-config';
+import { statusConfig, categoryConfig, storageIcon, storageLabel, packagingLabel } from '@/lib/donation-config';
 import type { Donation, DonationEvent, DonationStatus, DonationCategory } from '@/lib/types';
 
 export default function DonationDetailsPage() {
@@ -137,7 +137,7 @@ export default function DonationDetailsPage() {
           </span>
           <span className="inline-flex items-center gap-1 rounded-lg bg-secondary px-2.5 py-1 text-xs font-medium">
             <Box className="h-3 w-3" />
-            {donation.packaging}
+            {packagingLabel[donation.packaging]}
           </span>
         </div>
 
@@ -258,6 +258,9 @@ export default function DonationDetailsPage() {
               {donation.charity.location && (
                 <p className="text-sm text-muted-foreground">{donation.charity.location}</p>
               )}
+              {donation.charity.phone && (
+                <p className="mt-1 text-xs text-muted-foreground">{donation.charity.phone}</p>
+              )}
             </div>
             {donation.charity.phone && (
               <a href={`tel:${donation.charity.phone}`} className="flex h-10 w-10 items-center justify-center rounded-full bg-brand-purple-light transition-colors hover:bg-brand-purple/20">
@@ -285,6 +288,9 @@ export default function DonationDetailsPage() {
               <p className="font-medium text-foreground">{donation.driver.name}</p>
               {donation.driver.vehicle_type && (
                 <p className="text-sm text-muted-foreground">{donation.driver.vehicle_type}</p>
+              )}
+              {donation.driver.phone && (
+                <p className="mt-1 text-xs text-muted-foreground">{donation.driver.phone}</p>
               )}
             </div>
             {donation.driver.phone && (

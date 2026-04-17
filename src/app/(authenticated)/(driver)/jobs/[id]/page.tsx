@@ -12,7 +12,7 @@ import {
   Phone, Loader2, Building2, Heart, CheckCircle2, Truck,
   Navigation, Snowflake, Thermometer, ShieldCheck, AlertTriangle,
 } from 'lucide-react';
-import { driverStatusConfig as statusConfig, categoryConfig, storageIcon, storageLabel } from '@/lib/donation-config';
+import { driverStatusConfig as statusConfig, categoryConfig, storageIcon, storageLabel, packagingLabel } from '@/lib/donation-config';
 import type { Donation, DonationEvent, DonationStatus, DonationCategory } from '@/lib/types';
 
 export default function JobDetailsPage() {
@@ -189,6 +189,9 @@ export default function JobDetailsPage() {
             <div className="flex-1">
               <p className="font-medium text-foreground">{donation.donor.name}</p>
               <p className="text-sm text-muted-foreground">{donation.pickup_location}</p>
+              {isMyJob && donation.donor.phone && (
+                <p className="mt-1 text-xs text-muted-foreground">{donation.donor.phone}</p>
+              )}
             </div>
             {isMyJob && donation.donor.phone && (
               <a href={`tel:${donation.donor.phone}`} className="flex h-10 w-10 items-center justify-center rounded-full bg-brand-green-light transition-colors hover:bg-brand-green/20">
@@ -219,6 +222,9 @@ export default function JobDetailsPage() {
             <div className="flex-1">
               <p className="font-medium text-foreground">{donation.charity.name}</p>
               <p className="text-sm text-muted-foreground">{donation.charity.location || 'Location TBD'}</p>
+              {isMyJob && donation.charity.phone && (
+                <p className="mt-1 text-xs text-muted-foreground">{donation.charity.phone}</p>
+              )}
             </div>
             {isMyJob && donation.charity.phone && (
               <a href={`tel:${donation.charity.phone}`} className="flex h-10 w-10 items-center justify-center rounded-full bg-brand-purple-light transition-colors hover:bg-brand-purple/20">
@@ -255,7 +261,7 @@ export default function JobDetailsPage() {
           </span>
           <span className="inline-flex items-center gap-1 rounded-lg bg-secondary px-2.5 py-1 text-xs font-medium">
             <Box className="h-3 w-3" />
-            {donation.packaging}
+            {packagingLabel[donation.packaging]}
           </span>
         </div>
       </div>
