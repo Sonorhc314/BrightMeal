@@ -101,8 +101,17 @@ export function DonationForm({
     });
   };
 
+  const [allergenError, setAllergenError] = useState<string | null>(null);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (allergens.length === 0) {
+      setAllergenError('Please select allergens. If there are none, pick "None".');
+      document.getElementById('allergen-group')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+    setAllergenError(null);
 
     // Compute timestamps from simplified inputs
     // On edit, preserve existing readyBy/pickupStart if they were loaded
@@ -263,14 +272,22 @@ export function DonationForm({
             </div>
           </div>
 
-          <div className="space-y-2">
-            <Label>Allergens</Label>
+          <div className="space-y-2" id="allergen-group">
+            <Label>
+              Allergens <span className="text-red-600">*</span>
+            </Label>
+            <p className="text-xs text-muted-foreground">
+              Required under UK food law. If there are no allergens, select &quot;None&quot;.
+            </p>
             <div className="flex flex-wrap gap-2">
               {allergenOptions.map((a) => (
                 <button
                   key={a}
                   type="button"
-                  onClick={() => toggleAllergen(a)}
+                  onClick={() => {
+                    toggleAllergen(a);
+                    if (allergenError) setAllergenError(null);
+                  }}
                   className={`rounded-full border px-3 py-1.5 text-sm font-medium transition-all active:scale-[0.96] ${
                     allergens.includes(a)
                       ? a === 'None'
@@ -286,6 +303,9 @@ export function DonationForm({
                 </button>
               ))}
             </div>
+            {allergenError && (
+              <p className="text-xs font-medium text-red-600">{allergenError}</p>
+            )}
           </div>
         </div>
       </div>
