@@ -122,7 +122,7 @@ VALUES
 INSERT INTO profiles (id, role, name, email, phone, location, business_type, vehicle_type, license_plate, food_hygiene_rating, created_at)
 VALUES
   -- Donors (with food hygiene ratings)
-  ('11111111-1111-1111-1111-111111111111', 'donor', 'Bath Buns Bakery', 'bathbuns@demo.com', '01225 460000', '5 Cheap Street, Bath, BA1 1NE', 'bakery', NULL, NULL, 5, NOW() - INTERVAL '30 days'),
+  ('11111111-1111-1111-1111-111111111111', 'donor', 'Tasty Kitchen', 'bathbuns@demo.com', '01225 460000', '4 New St, Bath BA1 2AF', 'bakery', NULL, NULL, 5, NOW() - INTERVAL '30 days'),
   ('22222222-2222-2222-2222-222222222222', 'donor', 'The Green Rocket Cafe', 'greenrocket@demo.com', '01225 330088', '1 Pierrepont Street, Bath, BA1 1LA', 'restaurant', NULL, NULL, 5, NOW() - INTERVAL '28 days'),
   ('33333333-3333-3333-3333-333333333333', 'donor', 'Noya''s Kitchen', 'noyaskitchen@demo.com', '01225 462000', '1 Barton Street, Bath, BA1 1HQ', 'takeaway', NULL, NULL, 4, NOW() - INTERVAL '25 days'),
   ('44444444-4444-4444-4444-444444444444', 'donor', 'Third Space Cafe', 'thirdspace@demo.com', '01225 477700', '7 Edgar Buildings, Bath, BA1 2EE', 'cafe', NULL, NULL, 4, NOW() - INTERVAL '20 days'),
