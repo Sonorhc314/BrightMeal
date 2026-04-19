@@ -29,7 +29,7 @@ export default async function OffersPage() {
       .from('donations')
       .select('*, donor:profiles!donations_donor_id_fkey(*)')
       .eq('status', 'posted')
-      .gte('pickup_end', nowIso)
+      .gte('pickup_window_end', nowIso)
       .order('created_at', { ascending: false }),
     supabase
       .from('donations')
