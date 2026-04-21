@@ -1,6 +1,5 @@
 -- ============================================================
 -- BrightMeal Demo Seed Data
--- CW2 Dragons' Den Presentation (28 April 2026)
 -- ============================================================
 -- HOW TO RUN:
 -- 1. Open Supabase Dashboard > SQL Editor

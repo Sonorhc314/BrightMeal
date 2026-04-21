@@ -46,3 +46,4 @@ next-env.d.ts
 
 # video editing scratch (raw clips, screen recordings, exports — never commit)
 /video-raw
+/video-final

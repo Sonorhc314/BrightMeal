@@ -4,7 +4,7 @@ Reducing food waste by connecting surplus food donors with local charities throu
 
 **Live app:** [brightmeal.vercel.app](https://brightmeal.vercel.app)
 
-**Module:** CM32027 Entrepreneurship — CW2 Business Presentation
+**Module:** CM32027 Entrepreneurship
 **Team:** Group I — Rawand Ali, Leonid Shevchenko, Tori Rybalka, Riad Mehyar, Corbin Saunders, Rafeef Kurdi
 
 ---
@@ -44,7 +44,6 @@ src/
 supabase/
   migrations/       # 6 SQL migrations (schema, RLS, triggers, RPCs, gamification)
   seed.sql          # Demo seed data (paste into Supabase SQL Editor)
-presentation/       # CW2 slides (16 HTML sources + PPTX + build scripts)
 evidence/           # Interviews, usability testing, outreach materials
 branding/           # Logo SVGs and brand assets
 ```
@@ -86,6 +85,4 @@ npm run dev
 |------|-------------|
 | [`GENAI-DISCLOSURE.md`](GENAI-DISCLOSURE.md) | Generative AI usage declaration (Type B assessment) |
 | [`evidence/`](evidence/) | Interview write-ups, usability test reports, outreach materials |
-| [`presentation/`](presentation/) | CW2 Dragons' Den presentation (slides + PPTX) |
-| [`presentation/QA-PREP.md`](presentation/QA-PREP.md) | Anticipated Q&A with prepared answers |
 | [`branding/`](branding/) | Logo assets and brand identity |

@@ -1,7 +1,7 @@
 # Generative AI Disclosure
 
 **Module:** CM32027 Entrepreneurship
-**Assessment:** CW2 Business Presentation (Type B)
+**Assessment:** CW2 (Type B)
 **Group:** I (BrightMeal)
 
 ## Tools Used
@@ -10,7 +10,7 @@
 
 - **Scope:** CW2 development phase only
 - **Used for:** Implementing the Next.js application, database schema, RLS policies, trigger logic, RPC functions, Tailwind styling, and component architecture. Used as a pair-programming tool where team members described requirements and architectural decisions; Claude generated implementation code that was reviewed, tested, and iterated on.
-- **Not used for:** Architecture decisions, security model design, gamification concept, interview questions or analysis, outreach content, presentation script or content, legal and ethical analysis, business strategy.
+- **Not used for:** Architecture decisions, security model design, gamification concept, interview questions or analysis, outreach content, legal and ethical analysis, business strategy.
 
 ### Figma AI
 
@@ -28,7 +28,6 @@
 - Outreach strategy, branding, and marketing materials
 - Legal analysis (Food Safety Act 1990, Natasha's Law, Uber v Aslam, UK GDPR, DPA 2018)
 - Ethical and sustainability analysis
-- Presentation content, structure, slide design, and delivery
 - All user testing design and execution
 - Business model and forward strategy decisions
 
