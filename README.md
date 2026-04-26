@@ -20,8 +20,8 @@ Bath businesses waste tonnes of surplus food while local charities struggle to s
 - **FSA hygiene ratings** — Food Hygiene Rating (1-5) visible to charities when browsing offers
 - **Use-by vs best-before** — Date type toggle per UK food law
 - **Real-time status tracking** — Donation lifecycle from posted through to delivered with live notifications
-- **Gamification** — Points (10/kg), 21 badges across 4 tiers, weekly streaks, cross-role leaderboard with efficiency metric
-- **Security** — Row-Level Security, trigger-enforced state machine, 6 SECURITY DEFINER RPCs, role-based field restrictions
+- **Gamification** — Points (10/kg), 19 badges across 4 tiers, weekly streaks, cross-role leaderboard with efficiency metric
+- **Security** — Row-Level Security, trigger-enforced state machine, 7 SECURITY DEFINER RPCs, role-based field restrictions
 - **Food safety** — In-app guidelines page, driver onboarding, food issue reporting
 
 ## Tech Stack
@@ -42,7 +42,7 @@ src/
   components/       # React components (DonationForm, AuthLayout, BottomNav, etc.)
   lib/              # Utilities, config, Supabase clients, types
 supabase/
-  migrations/       # 6 SQL migrations (schema, RLS, triggers, RPCs, gamification)
+  migrations/       # 7 SQL migrations (schema, RLS, triggers, RPCs, gamification)
   seed.sql          # Demo seed data (paste into Supabase SQL Editor)
 evidence/           # Interviews, usability testing, outreach materials
 branding/           # Logo SVGs and brand assets
@@ -79,10 +79,21 @@ Create `.env.local` with your Supabase credentials (see `.env.example`), then:
 npm run dev
 ```
 
-## Documentation
+## Where to find everything
 
-| File | Description |
-|------|-------------|
-| [`GENAI-DISCLOSURE.md`](GENAI-DISCLOSURE.md) | Generative AI usage declaration (Type B assessment) |
-| [`evidence/`](evidence/) | Interview write-ups, usability test reports, outreach materials |
-| [`branding/`](branding/) | Logo assets and brand identity |
+Quick tour for anyone marking this. Group I spent Semester 2 building and testing BrightMeal, and most of the evidence sits in this repo.
+
+**The pitch itself.** Slide deck, poster, and pitch video all live under `evidence/` once finalised:
+- `evidence/slides/` for the Canva slide deck (PDF export)
+- `evidence/poster/` for the A3 poster (PDF and PNG)
+- `evidence/video/` for the pitch video
+
+**The working app.** It's deployed at [brightmeal.vercel.app](https://brightmeal.vercel.app), and the demo accounts above all use the password `demo1234`. The source code is in [`src/`](src/), and the database schema (row-level security, triggers, and 7 SECURITY DEFINER RPCs) is in [`supabase/migrations/`](supabase/migrations/). If you'd rather not click through the live app, [`evidence/screenshots/`](evidence/screenshots/) has 16 numbered shots covering every main page.
+
+**User research.** Seven semi-structured interviews with real Bath stakeholders sit in [`evidence/interviews/`](evidence/interviews/): four charities (Action Pantry, Community Kitchen, The Hive, Oasis Pantry), two restaurants (Friends Takeaway, Tasty Kitchen), and a write-up of driver feedback. These shaped a lot of the product decisions, especially the charity self-collection flow and the simplified posting form.
+
+**Usability testing.** Six think-aloud tests in [`evidence/usability-testing/`](evidence/usability-testing/), two per role. Donor flow was tested with Rafeef and Rawand, charity flow with Leo and Tori, driver flow with Riad and Corbin. Each report follows the same template (tasks attempted, observations, issues found, fixes applied), so they're easy to compare.
+
+**Outreach.** [`evidence/outreach/instagram/`](evidence/outreach/instagram/) has the Instagram posts we ran (intro, charity callout, volunteer recruitment, statistics, and so on) plus a screenshot of the profile. [`evidence/outreach/info-sheets/`](evidence/outreach/info-sheets/) has the printable handouts we used when approaching restaurants, charities, and potential volunteer drivers. The QR code that links to the live app is at [`evidence/outreach/brightmeal-qr-code.png`](evidence/outreach/brightmeal-qr-code.png), and the brand assets are split between [`evidence/outreach/branding/`](evidence/outreach/branding/) (branding sheet and rendered logos) and [`branding/`](branding/) (source SVGs).
+
+**GenAI declaration.** [`GENAI-DISCLOSURE.md`](GENAI-DISCLOSURE.md) covers everything per the Type B assessment requirements.
