@@ -22,8 +22,8 @@
 
 - System architecture (three-role model, App Router structure, Supabase integration)
 - Security model (RLS policies, trigger-enforced state machine, SECURITY DEFINER RPCs, field restrictions)
-- Gamification design (points formula, 21 badges across 4 tiers, streak mechanics, efficiency metric)
-- Database schema design (6 migrations, enum types, foreign key relationships)
+- Gamification design (points formula, 19 badges across 4 tiers, streak mechanics, efficiency metric)
+- Database schema design (7 migrations, enum types, foreign key relationships)
 - All stakeholder interviews (charity, restaurant, driver) and analysis of findings
 - Outreach strategy, branding, and marketing materials
 - Legal analysis (Food Safety Act 1990, Natasha's Law, Uber v Aslam, UK GDPR, DPA 2018)
