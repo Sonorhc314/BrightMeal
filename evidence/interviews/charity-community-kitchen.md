@@ -6,7 +6,7 @@
 | **Location** | Bath |
 | **Type** | Community kitchen / same-day cooking programme |
 | **Date** | February 2026 |
-| **Interviewer** | Leo |
+| **Interviewer** | Leo, Tori |
 | **Interest Level** | 5/5 (best fit) |
 
 ---
