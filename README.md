@@ -85,7 +85,7 @@ Quick tour for anyone marking this. Group I spent Semester 2 building and testin
 
 **The pitch itself.** Slide deck, poster, and pitch video all live under `evidence/` once finalised:
 - `evidence/slides/` for the Canva slide deck (PDF export)
-- `evidence/poster/` for the A3 poster (PDF and PNG)
+- `evidence/poster/` for the A3 poster (PDF)
 - `evidence/video/` for the pitch video
 
 **The working app.** It's deployed at [brightmeal.vercel.app](https://brightmeal.vercel.app), and the demo accounts above all use the password `demo1234`. The source code is in [`src/`](src/), and the database schema (row-level security, triggers, and 7 SECURITY DEFINER RPCs) is in [`supabase/migrations/`](supabase/migrations/). If you'd rather not click through the live app, [`evidence/screenshots/`](evidence/screenshots/) has 16 numbered shots covering every main page.
