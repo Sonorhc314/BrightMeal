@@ -6,7 +6,7 @@
 | **Location** | Bath |
 | **Type** | Community pantry / food bank (2 pantries in Bath, membership model) |
 | **Date** | March 2026 |
-| **Interviewer** | Leo |
+| **Interviewer** | Leo, Tori |
 | **Interest Level** | 4/5 |
 
 ---
