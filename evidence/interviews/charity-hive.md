@@ -6,7 +6,7 @@
 | **Location** | Bath |
 | **Type** | Community fridge + pantry (~1000kg food/month, 5-star hygiene rating) |
 | **Date** | March 2026 |
-| **Interviewer** | Leo |
+| **Interviewer** | Leo, Tori |
 | **Interest Level** | 3/5 |
 
 ---
